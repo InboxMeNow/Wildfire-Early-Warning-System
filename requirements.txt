@@ -11,3 +11,6 @@ meteostat
 pyspark
 numpy
 scikit-learn
+streamlit
+streamlit-folium
+plotly

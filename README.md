@@ -210,6 +210,24 @@ Daily automation on Windows can call:
 .\scripts\run_daily_inference.ps1
 ```
 
+### 11. Streamlit Dashboard
+
+```powershell
+streamlit run app.py
+```
+
+If `streamlit` is not on `PATH`, run:
+
+```powershell
+python -m streamlit run app.py
+```
+
+Dashboard views:
+
+- Risk Map: Folium forecast choropleth and heatmap from `reports/fire_risk_forecast_latest.geojson`.
+- Active Fires: FIRMS fire-point scatter from MinIO plus DBSCAN cluster polygons from `reports/dbscan_fire_clusters_latest.geojson`.
+- Statistics: Plotly charts for risk levels, daily fire detections, model metrics, and anomaly output.
+
 ## Current Results
 
 Latest run after applying the Vietnam boundary mask:
@@ -246,6 +264,7 @@ Label distribution:
 07_dbscan_clustering.py          # DBSCAN recent fire clusters + GeoJSON
 08_anomaly_detection.py          # Grid-level z-score anomaly detection
 09_inference.py                  # Open-Meteo next-day RF inference
+app.py                           # Streamlit dashboard
 geo_utils.py                     # GeoJSON point-in-polygon helpers
 geo/vietnam_boundary.geojson     # Vietnam country boundary mask
 docker-compose.yml               # Local MinIO + Spark stack

@@ -6,3 +6,4 @@ __pycache__/
 .playwright-mcp/
 .ivy2/
 *.py[cod]
+streamlit.*.log

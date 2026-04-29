@@ -20,7 +20,14 @@ Run locally:
     python 04_etl_clean.py
 
 Run with a Spark cluster:
-    spark-submit 04_etl_clean.py --spark-master spark://localhost:7077
+    spark-submit --packages org.apache.hadoop:hadoop-aws:3.3.4 \
+        04_etl_clean.py --spark-master spark://localhost:7077
+
+Run inside this docker-compose network:
+    docker compose exec spark-master /opt/spark/bin/spark-submit \
+        --packages org.apache.hadoop:hadoop-aws:3.3.4 \
+        --master spark://spark-master:7077 \
+        /workspace/04_etl_clean.py
 """
 
 from __future__ import annotations

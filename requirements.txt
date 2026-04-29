@@ -1,0 +1,11 @@
+pandas
+matplotlib
+seaborn
+folium
+jupyter
+ipykernel<7
+requests
+boto3
+pyarrow
+meteostat
+pyspark

@@ -1,0 +1,10 @@
+.git
+.venv
+.ivy2
+.playwright-mcp
+__pycache__
+*.pyc
+data/raw
+maps/*.html
+notebooks/*.ipynb
+reports

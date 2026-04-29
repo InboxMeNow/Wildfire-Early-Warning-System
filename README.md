@@ -30,6 +30,8 @@ Spark UI:
 - Master: `http://localhost:8080`
 - Worker: `http://localhost:8081`
 
+Spark image local duoc build tu `docker/spark/Dockerfile` de cai them `numpy`, vi PySpark MLlib can dependency nay khi train model.
+
 ## Cau Hinh
 
 Tao file `.env` neu can fetch lai FIRMS:
@@ -127,6 +129,30 @@ Output:
 - Report: `reports/data_quality_week1.md`
 - Heatmap: `maps/fires_heatmap_2020_2024.html`
 
+### 7. Baseline ML Training
+
+Notebook:
+
+```text
+notebooks/06_train_model.ipynb
+```
+
+Script tuong duong de chay nhanh bang Spark:
+
+```powershell
+docker compose exec -T spark-master /opt/spark/bin/spark-submit --master spark://spark-master:7077 /workspace/07_train_model.py
+```
+
+Xu ly:
+
+- Doc `s3a://wildfire-data/features/`
+- Split theo thoi gian: train 2020-2023, test 2024
+- Tinh class weights cho `fire_occurred`
+- Train Spark MLlib `RandomForestClassifier`
+- Evaluate AUC-ROC, Precision, Recall, F1
+- Luu model vao `s3a://wildfire-data/models/random_forest_fire_baseline/`
+- Luu metrics/feature importance vao `reports/`
+
 ## Ket Qua Hien Tai
 
 Tu lan chay gan nhat sau khi ap boundary mask Vietnam:
@@ -136,6 +162,7 @@ Tu lan chay gan nhat sau khi ap boundary mask Vietnam:
 - `features`: 206,451 rows, 113 grid cells, 20 columns
 - Date range: `2020-01-01` den `2024-12-31`
 - Data quality: PASS, khong co duplicate `(grid_id, date)`, labels khop voi `fire_count`
+- Baseline RF AUC-ROC tren test 2024: 0.8369
 
 Label distribution:
 
@@ -152,9 +179,11 @@ Label distribution:
 04_etl_clean.py                  # Spark clean ETL
 05_feature_engineering.py        # Spark spatial join + ML features
 06_data_quality_and_heatmap.py   # DQ report + heatmap
+07_train_model.py                # Spark MLlib RandomForest baseline
 geo_utils.py                     # GeoJSON point-in-polygon helpers
 geo/vietnam_boundary.geojson     # Vietnam country boundary mask
 docker-compose.yml               # MinIO + Spark local stack
+docker/spark/Dockerfile          # Spark image with numpy for MLlib
 spark-conf/spark-defaults.conf   # S3A config for Spark
 maps/                            # HTML visualizations
 reports/                         # Data quality reports

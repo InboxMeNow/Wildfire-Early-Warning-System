@@ -4,4 +4,5 @@ data/raw/
 __pycache__/
 .ipynb_checkpoints/
 .playwright-mcp/
+.ivy2/
 *.py[cod]

@@ -1,0 +1,17 @@
+feature,importance
+relative_humidity_2m_min,0.208303773939
+grid_lat_index,0.108957274888
+dayofyear_sin,0.094711537744
+temperature_2m_max,0.093570891229
+grid_lat,0.083656067500
+month_sin,0.081712646759
+precipitation_sum,0.062075689130
+dry_days_count,0.051371624157
+precipitation_sum_7days,0.044547506971
+grid_lon_index,0.043080502380
+grid_lon,0.036231004794
+station_distance_km,0.027511543760
+dayofyear_cos,0.026339823451
+wind_speed_10m_max,0.019386841882
+month_cos,0.018543271418
+weather_points_count,0.000000000000

@@ -185,6 +185,31 @@ Processing steps:
 - Save anomaly GeoJSON, detector stats, and metadata locally under `reports/`.
 - Upload the latest detector outputs to `s3://wildfire-data/models/fire_anomaly_detector/`.
 
+### 10. Next-Day Inference
+
+```powershell
+docker compose exec -T spark-master /opt/spark/bin/spark-submit --master spark://spark-master:7077 /workspace/09_inference.py
+```
+
+Processing steps:
+
+- Read Vietnam grid cells from `s3a://wildfire-data/features/`.
+- Fetch Open-Meteo forecast data for the target day, which defaults to tomorrow in `Asia/Ho_Chi_Minh`.
+- Rebuild the same model features used during training, including time features, 7-day precipitation, and dry-day streak.
+- Load the RF pipeline from `s3a://wildfire-data/models/random_forest_fire_baseline/`.
+- Predict fire occurrence probability for each grid cell.
+- Convert probability to `risk_level`: low (`0`), medium (`1`), high (`2`).
+- Save GeoJSON and metadata under `reports/`.
+- Upload the latest outputs to `s3a://wildfire-data/predictions/fire_risk_forecast/`.
+
+The forecast API variables used by the script are documented in the official Open-Meteo Weather Forecast API docs: https://open-meteo.com/en/docs
+
+Daily automation on Windows can call:
+
+```powershell
+.\scripts\run_daily_inference.ps1
+```
+
 ## Current Results
 
 Latest run after applying the Vietnam boundary mask:
@@ -199,6 +224,8 @@ Latest run after applying the Vietnam boundary mask:
 - Best current Spark risk model by AUC-ROC: `gbt`
 - Latest DBSCAN run: 86 fire points in the latest 24-hour window, 8 clusters
 - Latest anomaly run: 2 anomalous grids on `2024-12-31`
+- Latest inference run: 113 grid cells predicted for `2026-04-30`
+- Latest inference risk levels: 24 low, 53 medium, 36 high
 
 Label distribution:
 
@@ -218,11 +245,13 @@ Label distribution:
 07_train_model.py                # Spark MLlib RF tuning + GBT comparison
 07_dbscan_clustering.py          # DBSCAN recent fire clusters + GeoJSON
 08_anomaly_detection.py          # Grid-level z-score anomaly detection
+09_inference.py                  # Open-Meteo next-day RF inference
 geo_utils.py                     # GeoJSON point-in-polygon helpers
 geo/vietnam_boundary.geojson     # Vietnam country boundary mask
 docker-compose.yml               # Local MinIO + Spark stack
 docker/spark/Dockerfile          # Spark image with numpy for MLlib
 spark-conf/spark-defaults.conf   # S3A config for Spark
+scripts/                         # Operational helper scripts
 maps/                            # HTML visualizations
 reports/                         # Data quality and model reports
 ```

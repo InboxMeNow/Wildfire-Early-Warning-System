@@ -1,0 +1,21 @@
+{
+  "daily_variables": [
+    "temperature_2m_max",
+    "relative_humidity_2m_min",
+    "wind_speed_10m_max",
+    "precipitation_sum"
+  ],
+  "features_input": "s3a://wildfire-data/features/",
+  "grid_count": 113,
+  "high_threshold": 0.66,
+  "medium_threshold": 0.33,
+  "model_input": "s3a://wildfire-data/models/random_forest_fire_baseline/",
+  "open_meteo_url": "https://api.open-meteo.com/v1/forecast",
+  "risk_level_counts": {
+    "0": 24,
+    "1": 53,
+    "2": 36
+  },
+  "status": "ok",
+  "target_date": "2026-04-30"
+}

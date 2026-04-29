@@ -1,0 +1,5429 @@
+{
+  "features": [
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              105.0,
+              9.0
+            ],
+            [
+              105.5,
+              9.0
+            ],
+            [
+              105.5,
+              9.5
+            ],
+            [
+              105.0,
+              9.5
+            ],
+            [
+              105.0,
+              9.0
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "date": "2026-04-30",
+        "dry_days_count": 1,
+        "grid_id": "18_210",
+        "grid_lat": 9.0,
+        "grid_lon": 105.0,
+        "lat": 9.25,
+        "lon": 105.25,
+        "model_prediction": 1.0,
+        "precipitation_sum": 0.0,
+        "precipitation_sum_7days": 0.8999999999999999,
+        "relative_humidity_2m_min": 46.0,
+        "risk_label": "high",
+        "risk_level": 2,
+        "risk_score": 0.6658660355730207,
+        "temperature_2m_max": 34.7,
+        "wind_speed_10m_max": 20.0
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              105.5,
+              9.0
+            ],
+            [
+              106.0,
+              9.0
+            ],
+            [
+              106.0,
+              9.5
+            ],
+            [
+              105.5,
+              9.5
+            ],
+            [
+              105.5,
+              9.0
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "date": "2026-04-30",
+        "dry_days_count": 0,
+        "grid_id": "18_211",
+        "grid_lat": 9.0,
+        "grid_lon": 105.5,
+        "lat": 9.25,
+        "lon": 105.75,
+        "model_prediction": 1.0,
+        "precipitation_sum": 0.3,
+        "precipitation_sum_7days": 1.7,
+        "relative_humidity_2m_min": 63.0,
+        "risk_label": "medium",
+        "risk_level": 1,
+        "risk_score": 0.5212643552315575,
+        "temperature_2m_max": 32.0,
+        "wind_speed_10m_max": 20.9
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              105.0,
+              9.5
+            ],
+            [
+              105.5,
+              9.5
+            ],
+            [
+              105.5,
+              10.0
+            ],
+            [
+              105.0,
+              10.0
+            ],
+            [
+              105.0,
+              9.5
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "date": "2026-04-30",
+        "dry_days_count": 0,
+        "grid_id": "19_210",
+        "grid_lat": 9.5,
+        "grid_lon": 105.0,
+        "lat": 9.75,
+        "lon": 105.25,
+        "model_prediction": 1.0,
+        "precipitation_sum": 0.3,
+        "precipitation_sum_7days": 4.9,
+        "relative_humidity_2m_min": 40.0,
+        "risk_label": "high",
+        "risk_level": 2,
+        "risk_score": 0.7232174781625819,
+        "temperature_2m_max": 36.4,
+        "wind_speed_10m_max": 13.3
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              105.5,
+              9.5
+            ],
+            [
+              106.0,
+              9.5
+            ],
+            [
+              106.0,
+              10.0
+            ],
+            [
+              105.5,
+              10.0
+            ],
+            [
+              105.5,
+              9.5
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "date": "2026-04-30",
+        "dry_days_count": 0,
+        "grid_id": "19_211",
+        "grid_lat": 9.5,
+        "grid_lon": 105.5,
+        "lat": 9.75,
+        "lon": 105.75,
+        "model_prediction": 1.0,
+        "precipitation_sum": 0.1,
+        "precipitation_sum_7days": 1.2,
+        "relative_humidity_2m_min": 46.0,
+        "risk_label": "high",
+        "risk_level": 2,
+        "risk_score": 0.7339289881320842,
+        "temperature_2m_max": 35.0,
+        "wind_speed_10m_max": 15.8
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              106.0,
+              9.5
+            ],
+            [
+              106.5,
+              9.5
+            ],
+            [
+              106.5,
+              10.0
+            ],
+            [
+              106.0,
+              10.0
+            ],
+            [
+              106.0,
+              9.5
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "date": "2026-04-30",
+        "dry_days_count": 0,
+        "grid_id": "19_212",
+        "grid_lat": 9.5,
+        "grid_lon": 106.0,
+        "lat": 9.75,
+        "lon": 106.25,
+        "model_prediction": 1.0,
+        "precipitation_sum": 0.3,
+        "precipitation_sum_7days": 0.8999999999999999,
+        "relative_humidity_2m_min": 52.0,
+        "risk_label": "medium",
+        "risk_level": 1,
+        "risk_score": 0.6252405204428632,
+        "temperature_2m_max": 33.8,
+        "wind_speed_10m_max": 20.4
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              105.0,
+              10.0
+            ],
+            [
+              105.5,
+              10.0
+            ],
+            [
+              105.5,
+              10.5
+            ],
+            [
+              105.0,
+              10.5
+            ],
+            [
+              105.0,
+              10.0
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "date": "2026-04-30",
+        "dry_days_count": 0,
+        "grid_id": "20_210",
+        "grid_lat": 10.0,
+        "grid_lon": 105.0,
+        "lat": 10.25,
+        "lon": 105.25,
+        "model_prediction": 1.0,
+        "precipitation_sum": 0.2,
+        "precipitation_sum_7days": 1.6,
+        "relative_humidity_2m_min": 42.0,
+        "risk_label": "high",
+        "risk_level": 2,
+        "risk_score": 0.6767100403613154,
+        "temperature_2m_max": 35.7,
+        "wind_speed_10m_max": 15.6
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              105.5,
+              10.0
+            ],
+            [
+              106.0,
+              10.0
+            ],
+            [
+              106.0,
+              10.5
+            ],
+            [
+              105.5,
+              10.5
+            ],
+            [
+              105.5,
+              10.0
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "date": "2026-04-30",
+        "dry_days_count": 0,
+        "grid_id": "20_211",
+        "grid_lat": 10.0,
+        "grid_lon": 105.5,
+        "lat": 10.25,
+        "lon": 105.75,
+        "model_prediction": 1.0,
+        "precipitation_sum": 1.8,
+        "precipitation_sum_7days": 3.5,
+        "relative_humidity_2m_min": 50.0,
+        "risk_label": "high",
+        "risk_level": 2,
+        "risk_score": 0.6906982807239317,
+        "temperature_2m_max": 34.3,
+        "wind_speed_10m_max": 14.0
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              106.0,
+              10.0
+            ],
+            [
+              106.5,
+              10.0
+            ],
+            [
+              106.5,
+              10.5
+            ],
+            [
+              106.0,
+              10.5
+            ],
+            [
+              106.0,
+              10.0
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "date": "2026-04-30",
+        "dry_days_count": 0,
+        "grid_id": "20_212",
+        "grid_lat": 10.0,
+        "grid_lon": 106.0,
+        "lat": 10.25,
+        "lon": 106.25,
+        "model_prediction": 1.0,
+        "precipitation_sum": 0.4,
+        "precipitation_sum_7days": 0.6000000000000001,
+        "relative_humidity_2m_min": 47.0,
+        "risk_label": "medium",
+        "risk_level": 1,
+        "risk_score": 0.5604075512744702,
+        "temperature_2m_max": 34.8,
+        "wind_speed_10m_max": 17.1
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              106.5,
+              10.0
+            ],
+            [
+              107.0,
+              10.0
+            ],
+            [
+              107.0,
+              10.5
+            ],
+            [
+              106.5,
+              10.5
+            ],
+            [
+              106.5,
+              10.0
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "date": "2026-04-30",
+        "dry_days_count": 1,
+        "grid_id": "20_213",
+        "grid_lat": 10.0,
+        "grid_lon": 106.5,
+        "lat": 10.25,
+        "lon": 106.75,
+        "model_prediction": 0.0,
+        "precipitation_sum": 0.0,
+        "precipitation_sum_7days": 0.1,
+        "relative_humidity_2m_min": 54.0,
+        "risk_label": "medium",
+        "risk_level": 1,
+        "risk_score": 0.4347827237414641,
+        "temperature_2m_max": 33.4,
+        "wind_speed_10m_max": 18.8
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              104.5,
+              10.5
+            ],
+            [
+              105.0,
+              10.5
+            ],
+            [
+              105.0,
+              11.0
+            ],
+            [
+              104.5,
+              11.0
+            ],
+            [
+              104.5,
+              10.5
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "date": "2026-04-30",
+        "dry_days_count": 0,
+        "grid_id": "21_209",
+        "grid_lat": 10.5,
+        "grid_lon": 104.5,
+        "lat": 10.75,
+        "lon": 104.75,
+        "model_prediction": 1.0,
+        "precipitation_sum": 3.8,
+        "precipitation_sum_7days": 7.5,
+        "relative_humidity_2m_min": 38.0,
+        "risk_label": "high",
+        "risk_level": 2,
+        "risk_score": 0.7763643265687338,
+        "temperature_2m_max": 36.6,
+        "wind_speed_10m_max": 18.5
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              105.0,
+              10.5
+            ],
+            [
+              105.5,
+              10.5
+            ],
+            [
+              105.5,
+              11.0
+            ],
+            [
+              105.0,
+              11.0
+            ],
+            [
+              105.0,
+              10.5
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "date": "2026-04-30",
+        "dry_days_count": 0,
+        "grid_id": "21_210",
+        "grid_lat": 10.5,
+        "grid_lon": 105.0,
+        "lat": 10.75,
+        "lon": 105.25,
+        "model_prediction": 1.0,
+        "precipitation_sum": 0.4,
+        "precipitation_sum_7days": 3.1999999999999997,
+        "relative_humidity_2m_min": 42.0,
+        "risk_label": "high",
+        "risk_level": 2,
+        "risk_score": 0.8532065598810749,
+        "temperature_2m_max": 32.6,
+        "wind_speed_10m_max": 11.8
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              105.5,
+              10.5
+            ],
+            [
+              106.0,
+              10.5
+            ],
+            [
+              106.0,
+              11.0
+            ],
+            [
+              105.5,
+              11.0
+            ],
+            [
+              105.5,
+              10.5
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "date": "2026-04-30",
+        "dry_days_count": 0,
+        "grid_id": "21_211",
+        "grid_lat": 10.5,
+        "grid_lon": 105.5,
+        "lat": 10.75,
+        "lon": 105.75,
+        "model_prediction": 1.0,
+        "precipitation_sum": 0.4,
+        "precipitation_sum_7days": 1.0,
+        "relative_humidity_2m_min": 50.0,
+        "risk_label": "high",
+        "risk_level": 2,
+        "risk_score": 0.8686171105900083,
+        "temperature_2m_max": 35.0,
+        "wind_speed_10m_max": 14.1
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              106.0,
+              10.5
+            ],
+            [
+              106.5,
+              10.5
+            ],
+            [
+              106.5,
+              11.0
+            ],
+            [
+              106.0,
+              11.0
+            ],
+            [
+              106.0,
+              10.5
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "date": "2026-04-30",
+        "dry_days_count": 0,
+        "grid_id": "21_212",
+        "grid_lat": 10.5,
+        "grid_lon": 106.0,
+        "lat": 10.75,
+        "lon": 106.25,
+        "model_prediction": 1.0,
+        "precipitation_sum": 0.3,
+        "precipitation_sum_7days": 3.3,
+        "relative_humidity_2m_min": 53.0,
+        "risk_label": "high",
+        "risk_level": 2,
+        "risk_score": 0.865674655262012,
+        "temperature_2m_max": 34.1,
+        "wind_speed_10m_max": 14.7
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              106.5,
+              10.5
+            ],
+            [
+              107.0,
+              10.5
+            ],
+            [
+              107.0,
+              11.0
+            ],
+            [
+              106.5,
+              11.0
+            ],
+            [
+              106.5,
+              10.5
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "date": "2026-04-30",
+        "dry_days_count": 0,
+        "grid_id": "21_213",
+        "grid_lat": 10.5,
+        "grid_lon": 106.5,
+        "lat": 10.75,
+        "lon": 106.75,
+        "model_prediction": 1.0,
+        "precipitation_sum": 0.7,
+        "precipitation_sum_7days": 1.9999999999999998,
+        "relative_humidity_2m_min": 52.0,
+        "risk_label": "high",
+        "risk_level": 2,
+        "risk_score": 0.8715536134479802,
+        "temperature_2m_max": 33.9,
+        "wind_speed_10m_max": 18.4
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              107.0,
+              10.5
+            ],
+            [
+              107.5,
+              10.5
+            ],
+            [
+              107.5,
+              11.0
+            ],
+            [
+              107.0,
+              11.0
+            ],
+            [
+              107.0,
+              10.5
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "date": "2026-04-30",
+        "dry_days_count": 0,
+        "grid_id": "21_214",
+        "grid_lat": 10.5,
+        "grid_lon": 107.0,
+        "lat": 10.75,
+        "lon": 107.25,
+        "model_prediction": 1.0,
+        "precipitation_sum": 2.0,
+        "precipitation_sum_7days": 2.6,
+        "relative_humidity_2m_min": 54.0,
+        "risk_label": "high",
+        "risk_level": 2,
+        "risk_score": 0.8571389833639503,
+        "temperature_2m_max": 33.0,
+        "wind_speed_10m_max": 16.7
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              106.5,
+              11.0
+            ],
+            [
+              107.0,
+              11.0
+            ],
+            [
+              107.0,
+              11.5
+            ],
+            [
+              106.5,
+              11.5
+            ],
+            [
+              106.5,
+              11.0
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "date": "2026-04-30",
+        "dry_days_count": 0,
+        "grid_id": "22_213",
+        "grid_lat": 11.0,
+        "grid_lon": 106.5,
+        "lat": 11.25,
+        "lon": 106.75,
+        "model_prediction": 1.0,
+        "precipitation_sum": 0.3,
+        "precipitation_sum_7days": 3.8000000000000003,
+        "relative_humidity_2m_min": 43.0,
+        "risk_label": "high",
+        "risk_level": 2,
+        "risk_score": 0.8786383961391866,
+        "temperature_2m_max": 35.7,
+        "wind_speed_10m_max": 13.7
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              107.0,
+              11.0
+            ],
+            [
+              107.5,
+              11.0
+            ],
+            [
+              107.5,
+              11.5
+            ],
+            [
+              107.0,
+              11.5
+            ],
+            [
+              107.0,
+              11.0
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "date": "2026-04-30",
+        "dry_days_count": 1,
+        "grid_id": "22_214",
+        "grid_lat": 11.0,
+        "grid_lon": 107.0,
+        "lat": 11.25,
+        "lon": 107.25,
+        "model_prediction": 1.0,
+        "precipitation_sum": 0.0,
+        "precipitation_sum_7days": 1.9000000000000001,
+        "relative_humidity_2m_min": 43.0,
+        "risk_label": "high",
+        "risk_level": 2,
+        "risk_score": 0.8923638672863382,
+        "temperature_2m_max": 35.8,
+        "wind_speed_10m_max": 13.8
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              107.5,
+              11.0
+            ],
+            [
+              108.0,
+              11.0
+            ],
+            [
+              108.0,
+              11.5
+            ],
+            [
+              107.5,
+              11.5
+            ],
+            [
+              107.5,
+              11.0
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "date": "2026-04-30",
+        "dry_days_count": 0,
+        "grid_id": "22_215",
+        "grid_lat": 11.0,
+        "grid_lon": 107.5,
+        "lat": 11.25,
+        "lon": 107.75,
+        "model_prediction": 1.0,
+        "precipitation_sum": 0.7,
+        "precipitation_sum_7days": 2.0,
+        "relative_humidity_2m_min": 46.0,
+        "risk_label": "high",
+        "risk_level": 2,
+        "risk_score": 0.8968893179501082,
+        "temperature_2m_max": 34.1,
+        "wind_speed_10m_max": 17.0
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              108.0,
+              11.0
+            ],
+            [
+              108.5,
+              11.0
+            ],
+            [
+              108.5,
+              11.5
+            ],
+            [
+              108.0,
+              11.5
+            ],
+            [
+              108.0,
+              11.0
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "date": "2026-04-30",
+        "dry_days_count": 0,
+        "grid_id": "22_216",
+        "grid_lat": 11.0,
+        "grid_lon": 108.0,
+        "lat": 11.25,
+        "lon": 108.25,
+        "model_prediction": 1.0,
+        "precipitation_sum": 0.7,
+        "precipitation_sum_7days": 1.7,
+        "relative_humidity_2m_min": 52.0,
+        "risk_label": "high",
+        "risk_level": 2,
+        "risk_score": 0.8870454727171712,
+        "temperature_2m_max": 33.2,
+        "wind_speed_10m_max": 19.6
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              106.0,
+              11.5
+            ],
+            [
+              106.5,
+              11.5
+            ],
+            [
+              106.5,
+              12.0
+            ],
+            [
+              106.0,
+              12.0
+            ],
+            [
+              106.0,
+              11.5
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "date": "2026-04-30",
+        "dry_days_count": 0,
+        "grid_id": "23_212",
+        "grid_lat": 11.5,
+        "grid_lon": 106.0,
+        "lat": 11.75,
+        "lon": 106.25,
+        "model_prediction": 1.0,
+        "precipitation_sum": 0.2,
+        "precipitation_sum_7days": 4.8,
+        "relative_humidity_2m_min": 54.0,
+        "risk_label": "high",
+        "risk_level": 2,
+        "risk_score": 0.7870133989708933,
+        "temperature_2m_max": 34.2,
+        "wind_speed_10m_max": 9.0
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              106.5,
+              11.5
+            ],
+            [
+              107.0,
+              11.5
+            ],
+            [
+              107.0,
+              12.0
+            ],
+            [
+              106.5,
+              12.0
+            ],
+            [
+              106.5,
+              11.5
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "date": "2026-04-30",
+        "dry_days_count": 0,
+        "grid_id": "23_213",
+        "grid_lat": 11.5,
+        "grid_lon": 106.5,
+        "lat": 11.75,
+        "lon": 106.75,
+        "model_prediction": 1.0,
+        "precipitation_sum": 0.1,
+        "precipitation_sum_7days": 13.700000000000001,
+        "relative_humidity_2m_min": 46.0,
+        "risk_label": "high",
+        "risk_level": 2,
+        "risk_score": 0.8516972922744661,
+        "temperature_2m_max": 34.6,
+        "wind_speed_10m_max": 8.2
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              107.0,
+              11.5
+            ],
+            [
+              107.5,
+              11.5
+            ],
+            [
+              107.5,
+              12.0
+            ],
+            [
+              107.0,
+              12.0
+            ],
+            [
+              107.0,
+              11.5
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "date": "2026-04-30",
+        "dry_days_count": 1,
+        "grid_id": "23_214",
+        "grid_lat": 11.5,
+        "grid_lon": 107.0,
+        "lat": 11.75,
+        "lon": 107.25,
+        "model_prediction": 1.0,
+        "precipitation_sum": 0.0,
+        "precipitation_sum_7days": 9.299999999999999,
+        "relative_humidity_2m_min": 50.0,
+        "risk_label": "high",
+        "risk_level": 2,
+        "risk_score": 0.8409954610519652,
+        "temperature_2m_max": 34.0,
+        "wind_speed_10m_max": 10.6
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              107.5,
+              11.5
+            ],
+            [
+              108.0,
+              11.5
+            ],
+            [
+              108.0,
+              12.0
+            ],
+            [
+              107.5,
+              12.0
+            ],
+            [
+              107.5,
+              11.5
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "date": "2026-04-30",
+        "dry_days_count": 0,
+        "grid_id": "23_215",
+        "grid_lat": 11.5,
+        "grid_lon": 107.5,
+        "lat": 11.75,
+        "lon": 107.75,
+        "model_prediction": 1.0,
+        "precipitation_sum": 0.1,
+        "precipitation_sum_7days": 14.099999999999998,
+        "relative_humidity_2m_min": 41.0,
+        "risk_label": "high",
+        "risk_level": 2,
+        "risk_score": 0.905418583409365,
+        "temperature_2m_max": 34.8,
+        "wind_speed_10m_max": 6.1
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              108.0,
+              11.5
+            ],
+            [
+              108.5,
+              11.5
+            ],
+            [
+              108.5,
+              12.0
+            ],
+            [
+              108.0,
+              12.0
+            ],
+            [
+              108.0,
+              11.5
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "date": "2026-04-30",
+        "dry_days_count": 0,
+        "grid_id": "23_216",
+        "grid_lat": 11.5,
+        "grid_lon": 108.0,
+        "lat": 11.75,
+        "lon": 108.25,
+        "model_prediction": 1.0,
+        "precipitation_sum": 0.2,
+        "precipitation_sum_7days": 23.499999999999996,
+        "relative_humidity_2m_min": 51.0,
+        "risk_label": "high",
+        "risk_level": 2,
+        "risk_score": 0.7978944261451464,
+        "temperature_2m_max": 29.1,
+        "wind_speed_10m_max": 9.8
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              108.5,
+              11.5
+            ],
+            [
+              109.0,
+              11.5
+            ],
+            [
+              109.0,
+              12.0
+            ],
+            [
+              108.5,
+              12.0
+            ],
+            [
+              108.5,
+              11.5
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "date": "2026-04-30",
+        "dry_days_count": 1,
+        "grid_id": "23_217",
+        "grid_lat": 11.5,
+        "grid_lon": 108.5,
+        "lat": 11.75,
+        "lon": 108.75,
+        "model_prediction": 1.0,
+        "precipitation_sum": 0.0,
+        "precipitation_sum_7days": 9.600000000000001,
+        "relative_humidity_2m_min": 48.0,
+        "risk_label": "high",
+        "risk_level": 2,
+        "risk_score": 0.8858619060219839,
+        "temperature_2m_max": 30.8,
+        "wind_speed_10m_max": 12.9
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              107.0,
+              12.0
+            ],
+            [
+              107.5,
+              12.0
+            ],
+            [
+              107.5,
+              12.5
+            ],
+            [
+              107.0,
+              12.5
+            ],
+            [
+              107.0,
+              12.0
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "date": "2026-04-30",
+        "dry_days_count": 0,
+        "grid_id": "24_214",
+        "grid_lat": 12.0,
+        "grid_lon": 107.0,
+        "lat": 12.25,
+        "lon": 107.25,
+        "model_prediction": 1.0,
+        "precipitation_sum": 0.5,
+        "precipitation_sum_7days": 23.3,
+        "relative_humidity_2m_min": 43.0,
+        "risk_label": "high",
+        "risk_level": 2,
+        "risk_score": 0.813374330143268,
+        "temperature_2m_max": 35.0,
+        "wind_speed_10m_max": 9.5
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              107.5,
+              12.0
+            ],
+            [
+              108.0,
+              12.0
+            ],
+            [
+              108.0,
+              12.5
+            ],
+            [
+              107.5,
+              12.5
+            ],
+            [
+              107.5,
+              12.0
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "date": "2026-04-30",
+        "dry_days_count": 0,
+        "grid_id": "24_215",
+        "grid_lat": 12.0,
+        "grid_lon": 107.5,
+        "lat": 12.25,
+        "lon": 107.75,
+        "model_prediction": 1.0,
+        "precipitation_sum": 0.7,
+        "precipitation_sum_7days": 37.7,
+        "relative_humidity_2m_min": 45.0,
+        "risk_label": "high",
+        "risk_level": 2,
+        "risk_score": 0.8068563046585541,
+        "temperature_2m_max": 31.9,
+        "wind_speed_10m_max": 10.6
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              108.0,
+              12.0
+            ],
+            [
+              108.5,
+              12.0
+            ],
+            [
+              108.5,
+              12.5
+            ],
+            [
+              108.0,
+              12.5
+            ],
+            [
+              108.0,
+              12.0
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "date": "2026-04-30",
+        "dry_days_count": 0,
+        "grid_id": "24_216",
+        "grid_lat": 12.0,
+        "grid_lon": 108.0,
+        "lat": 12.25,
+        "lon": 108.25,
+        "model_prediction": 1.0,
+        "precipitation_sum": 1.0,
+        "precipitation_sum_7days": 21.6,
+        "relative_humidity_2m_min": 47.0,
+        "risk_label": "high",
+        "risk_level": 2,
+        "risk_score": 0.8501179747811441,
+        "temperature_2m_max": 31.7,
+        "wind_speed_10m_max": 7.5
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              108.5,
+              12.0
+            ],
+            [
+              109.0,
+              12.0
+            ],
+            [
+              109.0,
+              12.5
+            ],
+            [
+              108.5,
+              12.5
+            ],
+            [
+              108.5,
+              12.0
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "date": "2026-04-30",
+        "dry_days_count": 0,
+        "grid_id": "24_217",
+        "grid_lat": 12.0,
+        "grid_lon": 108.5,
+        "lat": 12.25,
+        "lon": 108.75,
+        "model_prediction": 1.0,
+        "precipitation_sum": 1.1,
+        "precipitation_sum_7days": 55.199999999999996,
+        "relative_humidity_2m_min": 51.0,
+        "risk_label": "medium",
+        "risk_level": 1,
+        "risk_score": 0.6259423830066816,
+        "temperature_2m_max": 25.0,
+        "wind_speed_10m_max": 14.3
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              109.0,
+              12.0
+            ],
+            [
+              109.5,
+              12.0
+            ],
+            [
+              109.5,
+              12.5
+            ],
+            [
+              109.0,
+              12.5
+            ],
+            [
+              109.0,
+              12.0
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "date": "2026-04-30",
+        "dry_days_count": 0,
+        "grid_id": "24_218",
+        "grid_lat": 12.0,
+        "grid_lon": 109.0,
+        "lat": 12.25,
+        "lon": 109.25,
+        "model_prediction": 0.0,
+        "precipitation_sum": 0.3,
+        "precipitation_sum_7days": 12.600000000000001,
+        "relative_humidity_2m_min": 63.0,
+        "risk_label": "medium",
+        "risk_level": 1,
+        "risk_score": 0.4234949606618075,
+        "temperature_2m_max": 26.6,
+        "wind_speed_10m_max": 14.5
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              108.0,
+              12.5
+            ],
+            [
+              108.5,
+              12.5
+            ],
+            [
+              108.5,
+              13.0
+            ],
+            [
+              108.0,
+              13.0
+            ],
+            [
+              108.0,
+              12.5
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "date": "2026-04-30",
+        "dry_days_count": 0,
+        "grid_id": "25_216",
+        "grid_lat": 12.5,
+        "grid_lon": 108.0,
+        "lat": 12.75,
+        "lon": 108.25,
+        "model_prediction": 1.0,
+        "precipitation_sum": 0.5,
+        "precipitation_sum_7days": 24.2,
+        "relative_humidity_2m_min": 46.0,
+        "risk_label": "high",
+        "risk_level": 2,
+        "risk_score": 0.8678826265016514,
+        "temperature_2m_max": 32.8,
+        "wind_speed_10m_max": 23.4
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              108.5,
+              12.5
+            ],
+            [
+              109.0,
+              12.5
+            ],
+            [
+              109.0,
+              13.0
+            ],
+            [
+              108.5,
+              13.0
+            ],
+            [
+              108.5,
+              12.5
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "date": "2026-04-30",
+        "dry_days_count": 0,
+        "grid_id": "25_217",
+        "grid_lat": 12.5,
+        "grid_lon": 108.5,
+        "lat": 12.75,
+        "lon": 108.75,
+        "model_prediction": 1.0,
+        "precipitation_sum": 0.2,
+        "precipitation_sum_7days": 11.9,
+        "relative_humidity_2m_min": 52.0,
+        "risk_label": "high",
+        "risk_level": 2,
+        "risk_score": 0.8883213501026204,
+        "temperature_2m_max": 31.5,
+        "wind_speed_10m_max": 18.2
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              109.0,
+              12.5
+            ],
+            [
+              109.5,
+              12.5
+            ],
+            [
+              109.5,
+              13.0
+            ],
+            [
+              109.0,
+              13.0
+            ],
+            [
+              109.0,
+              12.5
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "date": "2026-04-30",
+        "dry_days_count": 0,
+        "grid_id": "25_218",
+        "grid_lat": 12.5,
+        "grid_lon": 109.0,
+        "lat": 12.75,
+        "lon": 109.25,
+        "model_prediction": 1.0,
+        "precipitation_sum": 0.4,
+        "precipitation_sum_7days": 13.200000000000001,
+        "relative_humidity_2m_min": 58.0,
+        "risk_label": "high",
+        "risk_level": 2,
+        "risk_score": 0.6992409850182312,
+        "temperature_2m_max": 32.2,
+        "wind_speed_10m_max": 17.5
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              108.0,
+              13.0
+            ],
+            [
+              108.5,
+              13.0
+            ],
+            [
+              108.5,
+              13.5
+            ],
+            [
+              108.0,
+              13.5
+            ],
+            [
+              108.0,
+              13.0
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "date": "2026-04-30",
+        "dry_days_count": 0,
+        "grid_id": "26_216",
+        "grid_lat": 13.0,
+        "grid_lon": 108.0,
+        "lat": 13.25,
+        "lon": 108.25,
+        "model_prediction": 1.0,
+        "precipitation_sum": 1.7,
+        "precipitation_sum_7days": 19.3,
+        "relative_humidity_2m_min": 50.0,
+        "risk_label": "high",
+        "risk_level": 2,
+        "risk_score": 0.8740975437370482,
+        "temperature_2m_max": 33.0,
+        "wind_speed_10m_max": 16.2
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              108.5,
+              13.0
+            ],
+            [
+              109.0,
+              13.0
+            ],
+            [
+              109.0,
+              13.5
+            ],
+            [
+              108.5,
+              13.5
+            ],
+            [
+              108.5,
+              13.0
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "date": "2026-04-30",
+        "dry_days_count": 0,
+        "grid_id": "26_217",
+        "grid_lat": 13.0,
+        "grid_lon": 108.5,
+        "lat": 13.25,
+        "lon": 108.75,
+        "model_prediction": 1.0,
+        "precipitation_sum": 2.4,
+        "precipitation_sum_7days": 54.1,
+        "relative_humidity_2m_min": 68.0,
+        "risk_label": "medium",
+        "risk_level": 1,
+        "risk_score": 0.5741650738082879,
+        "temperature_2m_max": 26.5,
+        "wind_speed_10m_max": 18.5
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              109.0,
+              13.0
+            ],
+            [
+              109.5,
+              13.0
+            ],
+            [
+              109.5,
+              13.5
+            ],
+            [
+              109.0,
+              13.5
+            ],
+            [
+              109.0,
+              13.0
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "date": "2026-04-30",
+        "dry_days_count": 0,
+        "grid_id": "26_218",
+        "grid_lat": 13.0,
+        "grid_lon": 109.0,
+        "lat": 13.25,
+        "lon": 109.25,
+        "model_prediction": 1.0,
+        "precipitation_sum": 1.6,
+        "precipitation_sum_7days": 7.9,
+        "relative_humidity_2m_min": 53.0,
+        "risk_label": "medium",
+        "risk_level": 1,
+        "risk_score": 0.6499166612215603,
+        "temperature_2m_max": 31.4,
+        "wind_speed_10m_max": 21.2
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              108.0,
+              13.5
+            ],
+            [
+              108.5,
+              13.5
+            ],
+            [
+              108.5,
+              14.0
+            ],
+            [
+              108.0,
+              14.0
+            ],
+            [
+              108.0,
+              13.5
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "date": "2026-04-30",
+        "dry_days_count": 0,
+        "grid_id": "27_216",
+        "grid_lat": 13.5,
+        "grid_lon": 108.0,
+        "lat": 13.75,
+        "lon": 108.25,
+        "model_prediction": 1.0,
+        "precipitation_sum": 0.5,
+        "precipitation_sum_7days": 9.5,
+        "relative_humidity_2m_min": 50.0,
+        "risk_label": "high",
+        "risk_level": 2,
+        "risk_score": 0.8954024001593102,
+        "temperature_2m_max": 30.9,
+        "wind_speed_10m_max": 24.7
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              108.5,
+              13.5
+            ],
+            [
+              109.0,
+              13.5
+            ],
+            [
+              109.0,
+              14.0
+            ],
+            [
+              108.5,
+              14.0
+            ],
+            [
+              108.5,
+              13.5
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "date": "2026-04-30",
+        "dry_days_count": 0,
+        "grid_id": "27_217",
+        "grid_lat": 13.5,
+        "grid_lon": 108.5,
+        "lat": 13.75,
+        "lon": 108.75,
+        "model_prediction": 1.0,
+        "precipitation_sum": 2.3,
+        "precipitation_sum_7days": 20.400000000000002,
+        "relative_humidity_2m_min": 54.0,
+        "risk_label": "high",
+        "risk_level": 2,
+        "risk_score": 0.8644979289997455,
+        "temperature_2m_max": 32.4,
+        "wind_speed_10m_max": 12.9
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              109.0,
+              13.5
+            ],
+            [
+              109.5,
+              13.5
+            ],
+            [
+              109.5,
+              14.0
+            ],
+            [
+              109.0,
+              14.0
+            ],
+            [
+              109.0,
+              13.5
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "date": "2026-04-30",
+        "dry_days_count": 0,
+        "grid_id": "27_218",
+        "grid_lat": 13.5,
+        "grid_lon": 109.0,
+        "lat": 13.75,
+        "lon": 109.25,
+        "model_prediction": 1.0,
+        "precipitation_sum": 1.4,
+        "precipitation_sum_7days": 20.599999999999998,
+        "relative_humidity_2m_min": 60.0,
+        "risk_label": "medium",
+        "risk_level": 1,
+        "risk_score": 0.5832006516144986,
+        "temperature_2m_max": 31.0,
+        "wind_speed_10m_max": 16.2
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              107.5,
+              14.0
+            ],
+            [
+              108.0,
+              14.0
+            ],
+            [
+              108.0,
+              14.5
+            ],
+            [
+              107.5,
+              14.5
+            ],
+            [
+              107.5,
+              14.0
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "date": "2026-04-30",
+        "dry_days_count": 0,
+        "grid_id": "28_215",
+        "grid_lat": 14.0,
+        "grid_lon": 107.5,
+        "lat": 14.25,
+        "lon": 107.75,
+        "model_prediction": 1.0,
+        "precipitation_sum": 3.3,
+        "precipitation_sum_7days": 21.8,
+        "relative_humidity_2m_min": 51.0,
+        "risk_label": "high",
+        "risk_level": 2,
+        "risk_score": 0.8344750011993232,
+        "temperature_2m_max": 33.5,
+        "wind_speed_10m_max": 13.5
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              108.0,
+              14.0
+            ],
+            [
+              108.5,
+              14.0
+            ],
+            [
+              108.5,
+              14.5
+            ],
+            [
+              108.0,
+              14.5
+            ],
+            [
+              108.0,
+              14.0
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "date": "2026-04-30",
+        "dry_days_count": 0,
+        "grid_id": "28_216",
+        "grid_lat": 14.0,
+        "grid_lon": 108.0,
+        "lat": 14.25,
+        "lon": 108.25,
+        "model_prediction": 1.0,
+        "precipitation_sum": 0.9,
+        "precipitation_sum_7days": 11.9,
+        "relative_humidity_2m_min": 55.0,
+        "risk_label": "high",
+        "risk_level": 2,
+        "risk_score": 0.8530336029731928,
+        "temperature_2m_max": 29.4,
+        "wind_speed_10m_max": 15.4
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              108.5,
+              14.0
+            ],
+            [
+              109.0,
+              14.0
+            ],
+            [
+              109.0,
+              14.5
+            ],
+            [
+              108.5,
+              14.5
+            ],
+            [
+              108.5,
+              14.0
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "date": "2026-04-30",
+        "dry_days_count": 0,
+        "grid_id": "28_217",
+        "grid_lat": 14.0,
+        "grid_lon": 108.5,
+        "lat": 14.25,
+        "lon": 108.75,
+        "model_prediction": 1.0,
+        "precipitation_sum": 1.9,
+        "precipitation_sum_7days": 12.4,
+        "relative_humidity_2m_min": 64.0,
+        "risk_label": "high",
+        "risk_level": 2,
+        "risk_score": 0.7535599832168104,
+        "temperature_2m_max": 27.9,
+        "wind_speed_10m_max": 19.2
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              109.0,
+              14.0
+            ],
+            [
+              109.5,
+              14.0
+            ],
+            [
+              109.5,
+              14.5
+            ],
+            [
+              109.0,
+              14.5
+            ],
+            [
+              109.0,
+              14.0
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "date": "2026-04-30",
+        "dry_days_count": 0,
+        "grid_id": "28_218",
+        "grid_lat": 14.0,
+        "grid_lon": 109.0,
+        "lat": 14.25,
+        "lon": 109.25,
+        "model_prediction": 0.0,
+        "precipitation_sum": 0.3,
+        "precipitation_sum_7days": 57.99999999999999,
+        "relative_humidity_2m_min": 56.0,
+        "risk_label": "low",
+        "risk_level": 0,
+        "risk_score": 0.32940728131262126,
+        "temperature_2m_max": 31.8,
+        "wind_speed_10m_max": 21.9
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              107.5,
+              14.5
+            ],
+            [
+              108.0,
+              14.5
+            ],
+            [
+              108.0,
+              15.0
+            ],
+            [
+              107.5,
+              15.0
+            ],
+            [
+              107.5,
+              14.5
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "date": "2026-04-30",
+        "dry_days_count": 0,
+        "grid_id": "29_215",
+        "grid_lat": 14.5,
+        "grid_lon": 107.5,
+        "lat": 14.75,
+        "lon": 107.75,
+        "model_prediction": 1.0,
+        "precipitation_sum": 2.1,
+        "precipitation_sum_7days": 16.6,
+        "relative_humidity_2m_min": 44.0,
+        "risk_label": "high",
+        "risk_level": 2,
+        "risk_score": 0.8826686503250336,
+        "temperature_2m_max": 32.7,
+        "wind_speed_10m_max": 5.3
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              108.0,
+              14.5
+            ],
+            [
+              108.5,
+              14.5
+            ],
+            [
+              108.5,
+              15.0
+            ],
+            [
+              108.0,
+              15.0
+            ],
+            [
+              108.0,
+              14.5
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "date": "2026-04-30",
+        "dry_days_count": 0,
+        "grid_id": "29_216",
+        "grid_lat": 14.5,
+        "grid_lon": 108.0,
+        "lat": 14.75,
+        "lon": 108.25,
+        "model_prediction": 1.0,
+        "precipitation_sum": 1.5,
+        "precipitation_sum_7days": 10.399999999999999,
+        "relative_humidity_2m_min": 44.0,
+        "risk_label": "high",
+        "risk_level": 2,
+        "risk_score": 0.9072142939276939,
+        "temperature_2m_max": 32.1,
+        "wind_speed_10m_max": 15.8
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              108.5,
+              14.5
+            ],
+            [
+              109.0,
+              14.5
+            ],
+            [
+              109.0,
+              15.0
+            ],
+            [
+              108.5,
+              15.0
+            ],
+            [
+              108.5,
+              14.5
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "date": "2026-04-30",
+        "dry_days_count": 0,
+        "grid_id": "29_217",
+        "grid_lat": 14.5,
+        "grid_lon": 108.5,
+        "lat": 14.75,
+        "lon": 108.75,
+        "model_prediction": 0.0,
+        "precipitation_sum": 3.5,
+        "precipitation_sum_7days": 23.1,
+        "relative_humidity_2m_min": 72.0,
+        "risk_label": "medium",
+        "risk_level": 1,
+        "risk_score": 0.4770661704348443,
+        "temperature_2m_max": 24.5,
+        "wind_speed_10m_max": 15.6
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              109.0,
+              14.5
+            ],
+            [
+              109.5,
+              14.5
+            ],
+            [
+              109.5,
+              15.0
+            ],
+            [
+              109.0,
+              15.0
+            ],
+            [
+              109.0,
+              14.5
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "date": "2026-04-30",
+        "dry_days_count": 0,
+        "grid_id": "29_218",
+        "grid_lat": 14.5,
+        "grid_lon": 109.0,
+        "lat": 14.75,
+        "lon": 109.25,
+        "model_prediction": 0.0,
+        "precipitation_sum": 1.6,
+        "precipitation_sum_7days": 12.0,
+        "relative_humidity_2m_min": 59.0,
+        "risk_label": "low",
+        "risk_level": 0,
+        "risk_score": 0.1717316209895236,
+        "temperature_2m_max": 30.7,
+        "wind_speed_10m_max": 16.5
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              108.0,
+              15.0
+            ],
+            [
+              108.5,
+              15.0
+            ],
+            [
+              108.5,
+              15.5
+            ],
+            [
+              108.0,
+              15.5
+            ],
+            [
+              108.0,
+              15.0
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "date": "2026-04-30",
+        "dry_days_count": 0,
+        "grid_id": "30_216",
+        "grid_lat": 15.0,
+        "grid_lon": 108.0,
+        "lat": 15.25,
+        "lon": 108.25,
+        "model_prediction": 1.0,
+        "precipitation_sum": 0.8,
+        "precipitation_sum_7days": 70.8,
+        "relative_humidity_2m_min": 63.0,
+        "risk_label": "medium",
+        "risk_level": 1,
+        "risk_score": 0.533754971677332,
+        "temperature_2m_max": 19.6,
+        "wind_speed_10m_max": 7.5
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              108.5,
+              15.0
+            ],
+            [
+              109.0,
+              15.0
+            ],
+            [
+              109.0,
+              15.5
+            ],
+            [
+              108.5,
+              15.5
+            ],
+            [
+              108.5,
+              15.0
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "date": "2026-04-30",
+        "dry_days_count": 0,
+        "grid_id": "30_217",
+        "grid_lat": 15.0,
+        "grid_lon": 108.5,
+        "lat": 15.25,
+        "lon": 108.75,
+        "model_prediction": 1.0,
+        "precipitation_sum": 1.4,
+        "precipitation_sum_7days": 16.2,
+        "relative_humidity_2m_min": 62.0,
+        "risk_label": "high",
+        "risk_level": 2,
+        "risk_score": 0.8500168093789737,
+        "temperature_2m_max": 31.3,
+        "wind_speed_10m_max": 12.8
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              107.5,
+              15.5
+            ],
+            [
+              108.0,
+              15.5
+            ],
+            [
+              108.0,
+              16.0
+            ],
+            [
+              107.5,
+              16.0
+            ],
+            [
+              107.5,
+              15.5
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "date": "2026-04-30",
+        "dry_days_count": 0,
+        "grid_id": "31_215",
+        "grid_lat": 15.5,
+        "grid_lon": 107.5,
+        "lat": 15.75,
+        "lon": 107.75,
+        "model_prediction": 0.0,
+        "precipitation_sum": 3.6,
+        "precipitation_sum_7days": 40.0,
+        "relative_humidity_2m_min": 75.0,
+        "risk_label": "low",
+        "risk_level": 0,
+        "risk_score": 0.208495120714312,
+        "temperature_2m_max": 22.7,
+        "wind_speed_10m_max": 11.8
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              108.0,
+              15.5
+            ],
+            [
+              108.5,
+              15.5
+            ],
+            [
+              108.5,
+              16.0
+            ],
+            [
+              108.0,
+              16.0
+            ],
+            [
+              108.0,
+              15.5
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "date": "2026-04-30",
+        "dry_days_count": 0,
+        "grid_id": "31_216",
+        "grid_lat": 15.5,
+        "grid_lon": 108.0,
+        "lat": 15.75,
+        "lon": 108.25,
+        "model_prediction": 0.0,
+        "precipitation_sum": 2.1,
+        "precipitation_sum_7days": 49.1,
+        "relative_humidity_2m_min": 72.0,
+        "risk_label": "medium",
+        "risk_level": 1,
+        "risk_score": 0.38452654937325004,
+        "temperature_2m_max": 29.2,
+        "wind_speed_10m_max": 7.6
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              108.5,
+              15.5
+            ],
+            [
+              109.0,
+              15.5
+            ],
+            [
+              109.0,
+              16.0
+            ],
+            [
+              108.5,
+              16.0
+            ],
+            [
+              108.5,
+              15.5
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "date": "2026-04-30",
+        "dry_days_count": 0,
+        "grid_id": "31_217",
+        "grid_lat": 15.5,
+        "grid_lon": 108.5,
+        "lat": 15.75,
+        "lon": 108.75,
+        "model_prediction": 0.0,
+        "precipitation_sum": 0.2,
+        "precipitation_sum_7days": 14.099999999999998,
+        "relative_humidity_2m_min": 58.0,
+        "risk_label": "medium",
+        "risk_level": 1,
+        "risk_score": 0.4387381143628872,
+        "temperature_2m_max": 30.7,
+        "wind_speed_10m_max": 22.5
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              107.5,
+              16.0
+            ],
+            [
+              108.0,
+              16.0
+            ],
+            [
+              108.0,
+              16.5
+            ],
+            [
+              107.5,
+              16.5
+            ],
+            [
+              107.5,
+              16.0
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "date": "2026-04-30",
+        "dry_days_count": 0,
+        "grid_id": "32_215",
+        "grid_lat": 16.0,
+        "grid_lon": 107.5,
+        "lat": 16.25,
+        "lon": 107.75,
+        "model_prediction": 0.0,
+        "precipitation_sum": 6.1,
+        "precipitation_sum_7days": 62.300000000000004,
+        "relative_humidity_2m_min": 78.0,
+        "risk_label": "low",
+        "risk_level": 0,
+        "risk_score": 0.1479667781180012,
+        "temperature_2m_max": 23.1,
+        "wind_speed_10m_max": 13.0
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              108.0,
+              16.0
+            ],
+            [
+              108.5,
+              16.0
+            ],
+            [
+              108.5,
+              16.5
+            ],
+            [
+              108.0,
+              16.5
+            ],
+            [
+              108.0,
+              16.0
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "date": "2026-04-30",
+        "dry_days_count": 0,
+        "grid_id": "32_216",
+        "grid_lat": 16.0,
+        "grid_lon": 108.0,
+        "lat": 16.25,
+        "lon": 108.25,
+        "model_prediction": 0.0,
+        "precipitation_sum": 0.5,
+        "precipitation_sum_7days": 35.5,
+        "relative_humidity_2m_min": 69.0,
+        "risk_label": "low",
+        "risk_level": 0,
+        "risk_score": 0.1961885777500762,
+        "temperature_2m_max": 22.3,
+        "wind_speed_10m_max": 11.2
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              107.0,
+              16.5
+            ],
+            [
+              107.5,
+              16.5
+            ],
+            [
+              107.5,
+              17.0
+            ],
+            [
+              107.0,
+              17.0
+            ],
+            [
+              107.0,
+              16.5
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "date": "2026-04-30",
+        "dry_days_count": 0,
+        "grid_id": "33_214",
+        "grid_lat": 16.5,
+        "grid_lon": 107.0,
+        "lat": 16.75,
+        "lon": 107.25,
+        "model_prediction": 0.0,
+        "precipitation_sum": 5.6,
+        "precipitation_sum_7days": 43.800000000000004,
+        "relative_humidity_2m_min": 62.0,
+        "risk_label": "medium",
+        "risk_level": 1,
+        "risk_score": 0.3803130795636506,
+        "temperature_2m_max": 26.6,
+        "wind_speed_10m_max": 13.9
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              107.5,
+              16.5
+            ],
+            [
+              108.0,
+              16.5
+            ],
+            [
+              108.0,
+              17.0
+            ],
+            [
+              107.5,
+              17.0
+            ],
+            [
+              107.5,
+              16.5
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "date": "2026-04-30",
+        "dry_days_count": 0,
+        "grid_id": "33_215",
+        "grid_lat": 16.5,
+        "grid_lon": 107.5,
+        "lat": 16.75,
+        "lon": 107.75,
+        "model_prediction": 0.0,
+        "precipitation_sum": 1.6,
+        "precipitation_sum_7days": 28.300000000000004,
+        "relative_humidity_2m_min": 63.0,
+        "risk_label": "low",
+        "risk_level": 0,
+        "risk_score": 0.28824912179789725,
+        "temperature_2m_max": 28.5,
+        "wind_speed_10m_max": 13.5
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              106.5,
+              17.0
+            ],
+            [
+              107.0,
+              17.0
+            ],
+            [
+              107.0,
+              17.5
+            ],
+            [
+              106.5,
+              17.5
+            ],
+            [
+              106.5,
+              17.0
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "date": "2026-04-30",
+        "dry_days_count": 0,
+        "grid_id": "34_213",
+        "grid_lat": 17.0,
+        "grid_lon": 106.5,
+        "lat": 17.25,
+        "lon": 106.75,
+        "model_prediction": 0.0,
+        "precipitation_sum": 1.7,
+        "precipitation_sum_7days": 28.499999999999996,
+        "relative_humidity_2m_min": 62.0,
+        "risk_label": "medium",
+        "risk_level": 1,
+        "risk_score": 0.33092853706488984,
+        "temperature_2m_max": 25.4,
+        "wind_speed_10m_max": 19.6
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              107.0,
+              17.0
+            ],
+            [
+              107.5,
+              17.0
+            ],
+            [
+              107.5,
+              17.5
+            ],
+            [
+              107.0,
+              17.5
+            ],
+            [
+              107.0,
+              17.0
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "date": "2026-04-30",
+        "dry_days_count": 1,
+        "grid_id": "34_214",
+        "grid_lat": 17.0,
+        "grid_lon": 107.0,
+        "lat": 17.25,
+        "lon": 107.25,
+        "model_prediction": 1.0,
+        "precipitation_sum": 0.0,
+        "precipitation_sum_7days": 31.4,
+        "relative_humidity_2m_min": 59.0,
+        "risk_label": "medium",
+        "risk_level": 1,
+        "risk_score": 0.5166045001867888,
+        "temperature_2m_max": 28.6,
+        "wind_speed_10m_max": 16.4
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              106.0,
+              17.5
+            ],
+            [
+              106.5,
+              17.5
+            ],
+            [
+              106.5,
+              18.0
+            ],
+            [
+              106.0,
+              18.0
+            ],
+            [
+              106.0,
+              17.5
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "date": "2026-04-30",
+        "dry_days_count": 1,
+        "grid_id": "35_212",
+        "grid_lat": 17.5,
+        "grid_lon": 106.0,
+        "lat": 17.75,
+        "lon": 106.25,
+        "model_prediction": 0.0,
+        "precipitation_sum": 0.0,
+        "precipitation_sum_7days": 39.0,
+        "relative_humidity_2m_min": 62.0,
+        "risk_label": "medium",
+        "risk_level": 1,
+        "risk_score": 0.4005943051759847,
+        "temperature_2m_max": 26.0,
+        "wind_speed_10m_max": 23.6
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              106.5,
+              17.5
+            ],
+            [
+              107.0,
+              17.5
+            ],
+            [
+              107.0,
+              18.0
+            ],
+            [
+              106.5,
+              18.0
+            ],
+            [
+              106.5,
+              17.5
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "date": "2026-04-30",
+        "dry_days_count": 0,
+        "grid_id": "35_213",
+        "grid_lat": 17.5,
+        "grid_lon": 106.5,
+        "lat": 17.75,
+        "lon": 106.75,
+        "model_prediction": 0.0,
+        "precipitation_sum": 0.5,
+        "precipitation_sum_7days": 43.4,
+        "relative_humidity_2m_min": 62.0,
+        "risk_label": "low",
+        "risk_level": 0,
+        "risk_score": 0.264021953919253,
+        "temperature_2m_max": 27.4,
+        "wind_speed_10m_max": 17.6
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              106.0,
+              18.0
+            ],
+            [
+              106.5,
+              18.0
+            ],
+            [
+              106.5,
+              18.5
+            ],
+            [
+              106.0,
+              18.5
+            ],
+            [
+              106.0,
+              18.0
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "date": "2026-04-30",
+        "dry_days_count": 0,
+        "grid_id": "36_212",
+        "grid_lat": 18.0,
+        "grid_lon": 106.0,
+        "lat": 18.25,
+        "lon": 106.25,
+        "model_prediction": 0.0,
+        "precipitation_sum": 1.5,
+        "precipitation_sum_7days": 34.8,
+        "relative_humidity_2m_min": 65.0,
+        "risk_label": "low",
+        "risk_level": 0,
+        "risk_score": 0.31964735175093845,
+        "temperature_2m_max": 25.8,
+        "wind_speed_10m_max": 13.1
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              105.5,
+              18.5
+            ],
+            [
+              106.0,
+              18.5
+            ],
+            [
+              106.0,
+              19.0
+            ],
+            [
+              105.5,
+              19.0
+            ],
+            [
+              105.5,
+              18.5
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "date": "2026-04-30",
+        "dry_days_count": 0,
+        "grid_id": "37_211",
+        "grid_lat": 18.5,
+        "grid_lon": 105.5,
+        "lat": 18.75,
+        "lon": 105.75,
+        "model_prediction": 0.0,
+        "precipitation_sum": 5.2,
+        "precipitation_sum_7days": 36.4,
+        "relative_humidity_2m_min": 67.0,
+        "risk_label": "low",
+        "risk_level": 0,
+        "risk_score": 0.22880038643854594,
+        "temperature_2m_max": 25.7,
+        "wind_speed_10m_max": 11.4
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              106.0,
+              18.5
+            ],
+            [
+              106.5,
+              18.5
+            ],
+            [
+              106.5,
+              19.0
+            ],
+            [
+              106.0,
+              19.0
+            ],
+            [
+              106.0,
+              18.5
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "date": "2026-04-30",
+        "dry_days_count": 1,
+        "grid_id": "37_212",
+        "grid_lat": 18.5,
+        "grid_lon": 106.0,
+        "lat": 18.75,
+        "lon": 106.25,
+        "model_prediction": 0.0,
+        "precipitation_sum": 0.0,
+        "precipitation_sum_7days": 23.6,
+        "relative_humidity_2m_min": 67.0,
+        "risk_label": "low",
+        "risk_level": 0,
+        "risk_score": 0.28188439639396506,
+        "temperature_2m_max": 25.8,
+        "wind_speed_10m_max": 27.6
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              104.5,
+              19.0
+            ],
+            [
+              105.0,
+              19.0
+            ],
+            [
+              105.0,
+              19.5
+            ],
+            [
+              104.5,
+              19.5
+            ],
+            [
+              104.5,
+              19.0
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "date": "2026-04-30",
+        "dry_days_count": 0,
+        "grid_id": "38_209",
+        "grid_lat": 19.0,
+        "grid_lon": 104.5,
+        "lat": 19.25,
+        "lon": 104.75,
+        "model_prediction": 0.0,
+        "precipitation_sum": 0.4,
+        "precipitation_sum_7days": 37.699999999999996,
+        "relative_humidity_2m_min": 72.0,
+        "risk_label": "low",
+        "risk_level": 0,
+        "risk_score": 0.2611613500307911,
+        "temperature_2m_max": 18.1,
+        "wind_speed_10m_max": 11.9
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              105.0,
+              19.0
+            ],
+            [
+              105.5,
+              19.0
+            ],
+            [
+              105.5,
+              19.5
+            ],
+            [
+              105.0,
+              19.5
+            ],
+            [
+              105.0,
+              19.0
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "date": "2026-04-30",
+        "dry_days_count": 1,
+        "grid_id": "38_210",
+        "grid_lat": 19.0,
+        "grid_lon": 105.0,
+        "lat": 19.25,
+        "lon": 105.25,
+        "model_prediction": 0.0,
+        "precipitation_sum": 0.0,
+        "precipitation_sum_7days": 14.999999999999998,
+        "relative_humidity_2m_min": 65.0,
+        "risk_label": "medium",
+        "risk_level": 1,
+        "risk_score": 0.3873426662067647,
+        "temperature_2m_max": 26.1,
+        "wind_speed_10m_max": 10.8
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              105.5,
+              19.0
+            ],
+            [
+              106.0,
+              19.0
+            ],
+            [
+              106.0,
+              19.5
+            ],
+            [
+              105.5,
+              19.5
+            ],
+            [
+              105.5,
+              19.0
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "date": "2026-04-30",
+        "dry_days_count": 2,
+        "grid_id": "38_211",
+        "grid_lat": 19.0,
+        "grid_lon": 105.5,
+        "lat": 19.25,
+        "lon": 105.75,
+        "model_prediction": 1.0,
+        "precipitation_sum": 0.0,
+        "precipitation_sum_7days": 18.3,
+        "relative_humidity_2m_min": 60.0,
+        "risk_label": "medium",
+        "risk_level": 1,
+        "risk_score": 0.6129305300933543,
+        "temperature_2m_max": 27.1,
+        "wind_speed_10m_max": 15.6
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              104.5,
+              19.5
+            ],
+            [
+              105.0,
+              19.5
+            ],
+            [
+              105.0,
+              20.0
+            ],
+            [
+              104.5,
+              20.0
+            ],
+            [
+              104.5,
+              19.5
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "date": "2026-04-30",
+        "dry_days_count": 1,
+        "grid_id": "39_209",
+        "grid_lat": 19.5,
+        "grid_lon": 104.5,
+        "lat": 19.75,
+        "lon": 104.75,
+        "model_prediction": 0.0,
+        "precipitation_sum": 0.0,
+        "precipitation_sum_7days": 44.5,
+        "relative_humidity_2m_min": 60.0,
+        "risk_label": "medium",
+        "risk_level": 1,
+        "risk_score": 0.361260287819084,
+        "temperature_2m_max": 23.9,
+        "wind_speed_10m_max": 10.8
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              105.0,
+              19.5
+            ],
+            [
+              105.5,
+              19.5
+            ],
+            [
+              105.5,
+              20.0
+            ],
+            [
+              105.0,
+              20.0
+            ],
+            [
+              105.0,
+              19.5
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "date": "2026-04-30",
+        "dry_days_count": 1,
+        "grid_id": "39_210",
+        "grid_lat": 19.5,
+        "grid_lon": 105.0,
+        "lat": 19.75,
+        "lon": 105.25,
+        "model_prediction": 0.0,
+        "precipitation_sum": 0.0,
+        "precipitation_sum_7days": 17.8,
+        "relative_humidity_2m_min": 58.0,
+        "risk_label": "medium",
+        "risk_level": 1,
+        "risk_score": 0.4364784429897414,
+        "temperature_2m_max": 25.9,
+        "wind_speed_10m_max": 8.1
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              105.5,
+              19.5
+            ],
+            [
+              106.0,
+              19.5
+            ],
+            [
+              106.0,
+              20.0
+            ],
+            [
+              105.5,
+              20.0
+            ],
+            [
+              105.5,
+              19.5
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "date": "2026-04-30",
+        "dry_days_count": 2,
+        "grid_id": "39_211",
+        "grid_lat": 19.5,
+        "grid_lon": 105.5,
+        "lat": 19.75,
+        "lon": 105.75,
+        "model_prediction": 1.0,
+        "precipitation_sum": 0.0,
+        "precipitation_sum_7days": 23.400000000000002,
+        "relative_humidity_2m_min": 53.0,
+        "risk_label": "medium",
+        "risk_level": 1,
+        "risk_score": 0.6125970597880321,
+        "temperature_2m_max": 27.0,
+        "wind_speed_10m_max": 13.7
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              105.0,
+              20.0
+            ],
+            [
+              105.5,
+              20.0
+            ],
+            [
+              105.5,
+              20.5
+            ],
+            [
+              105.0,
+              20.5
+            ],
+            [
+              105.0,
+              20.0
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "date": "2026-04-30",
+        "dry_days_count": 1,
+        "grid_id": "40_210",
+        "grid_lat": 20.0,
+        "grid_lon": 105.0,
+        "lat": 20.25,
+        "lon": 105.25,
+        "model_prediction": 0.0,
+        "precipitation_sum": 0.0,
+        "precipitation_sum_7days": 16.9,
+        "relative_humidity_2m_min": 54.0,
+        "risk_label": "medium",
+        "risk_level": 1,
+        "risk_score": 0.4187206873588849,
+        "temperature_2m_max": 23.6,
+        "wind_speed_10m_max": 10.3
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              105.5,
+              20.0
+            ],
+            [
+              106.0,
+              20.0
+            ],
+            [
+              106.0,
+              20.5
+            ],
+            [
+              105.5,
+              20.5
+            ],
+            [
+              105.5,
+              20.0
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "date": "2026-04-30",
+        "dry_days_count": 0,
+        "grid_id": "40_211",
+        "grid_lat": 20.0,
+        "grid_lon": 105.5,
+        "lat": 20.25,
+        "lon": 105.75,
+        "model_prediction": 0.0,
+        "precipitation_sum": 0.5,
+        "precipitation_sum_7days": 10.6,
+        "relative_humidity_2m_min": 50.0,
+        "risk_label": "medium",
+        "risk_level": 1,
+        "risk_score": 0.46568274740622123,
+        "temperature_2m_max": 28.0,
+        "wind_speed_10m_max": 15.0
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              106.0,
+              20.0
+            ],
+            [
+              106.5,
+              20.0
+            ],
+            [
+              106.5,
+              20.5
+            ],
+            [
+              106.0,
+              20.5
+            ],
+            [
+              106.0,
+              20.0
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "date": "2026-04-30",
+        "dry_days_count": 0,
+        "grid_id": "40_212",
+        "grid_lat": 20.0,
+        "grid_lon": 106.0,
+        "lat": 20.25,
+        "lon": 106.25,
+        "model_prediction": 0.0,
+        "precipitation_sum": 0.2,
+        "precipitation_sum_7days": 23.9,
+        "relative_humidity_2m_min": 60.0,
+        "risk_label": "low",
+        "risk_level": 0,
+        "risk_score": 0.31912728036750915,
+        "temperature_2m_max": 26.5,
+        "wind_speed_10m_max": 14.2
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              105.0,
+              20.5
+            ],
+            [
+              105.5,
+              20.5
+            ],
+            [
+              105.5,
+              21.0
+            ],
+            [
+              105.0,
+              21.0
+            ],
+            [
+              105.0,
+              20.5
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "date": "2026-04-30",
+        "dry_days_count": 1,
+        "grid_id": "41_210",
+        "grid_lat": 20.5,
+        "grid_lon": 105.0,
+        "lat": 20.75,
+        "lon": 105.25,
+        "model_prediction": 0.0,
+        "precipitation_sum": 0.0,
+        "precipitation_sum_7days": 13.399999999999999,
+        "relative_humidity_2m_min": 52.0,
+        "risk_label": "medium",
+        "risk_level": 1,
+        "risk_score": 0.47262142649206473,
+        "temperature_2m_max": 25.3,
+        "wind_speed_10m_max": 10.6
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              105.5,
+              20.5
+            ],
+            [
+              106.0,
+              20.5
+            ],
+            [
+              106.0,
+              21.0
+            ],
+            [
+              105.5,
+              21.0
+            ],
+            [
+              105.5,
+              20.5
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "date": "2026-04-30",
+        "dry_days_count": 1,
+        "grid_id": "41_211",
+        "grid_lat": 20.5,
+        "grid_lon": 105.5,
+        "lat": 20.75,
+        "lon": 105.75,
+        "model_prediction": 1.0,
+        "precipitation_sum": 0.0,
+        "precipitation_sum_7days": 18.0,
+        "relative_humidity_2m_min": 40.0,
+        "risk_label": "medium",
+        "risk_level": 1,
+        "risk_score": 0.6422425264546426,
+        "temperature_2m_max": 30.8,
+        "wind_speed_10m_max": 16.1
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              106.0,
+              20.5
+            ],
+            [
+              106.5,
+              20.5
+            ],
+            [
+              106.5,
+              21.0
+            ],
+            [
+              106.0,
+              21.0
+            ],
+            [
+              106.0,
+              20.5
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "date": "2026-04-30",
+        "dry_days_count": 1,
+        "grid_id": "41_212",
+        "grid_lat": 20.5,
+        "grid_lon": 106.0,
+        "lat": 20.75,
+        "lon": 106.25,
+        "model_prediction": 0.0,
+        "precipitation_sum": 0.0,
+        "precipitation_sum_7days": 5.8,
+        "relative_humidity_2m_min": 52.0,
+        "risk_label": "medium",
+        "risk_level": 1,
+        "risk_score": 0.4757406118367022,
+        "temperature_2m_max": 26.2,
+        "wind_speed_10m_max": 10.5
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              106.5,
+              20.5
+            ],
+            [
+              107.0,
+              20.5
+            ],
+            [
+              107.0,
+              21.0
+            ],
+            [
+              106.5,
+              21.0
+            ],
+            [
+              106.5,
+              20.5
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "date": "2026-04-30",
+        "dry_days_count": 1,
+        "grid_id": "41_213",
+        "grid_lat": 20.5,
+        "grid_lon": 106.5,
+        "lat": 20.75,
+        "lon": 106.75,
+        "model_prediction": 0.0,
+        "precipitation_sum": 0.0,
+        "precipitation_sum_7days": 32.400000000000006,
+        "relative_humidity_2m_min": 57.0,
+        "risk_label": "medium",
+        "risk_level": 1,
+        "risk_score": 0.4049618498662412,
+        "temperature_2m_max": 26.6,
+        "wind_speed_10m_max": 10.0
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              103.5,
+              21.0
+            ],
+            [
+              104.0,
+              21.0
+            ],
+            [
+              104.0,
+              21.5
+            ],
+            [
+              103.5,
+              21.5
+            ],
+            [
+              103.5,
+              21.0
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "date": "2026-04-30",
+        "dry_days_count": 0,
+        "grid_id": "42_207",
+        "grid_lat": 21.0,
+        "grid_lon": 103.5,
+        "lat": 21.25,
+        "lon": 103.75,
+        "model_prediction": 0.0,
+        "precipitation_sum": 9.7,
+        "precipitation_sum_7days": 70.0,
+        "relative_humidity_2m_min": 62.0,
+        "risk_label": "low",
+        "risk_level": 0,
+        "risk_score": 0.2715237099498392,
+        "temperature_2m_max": 24.3,
+        "wind_speed_10m_max": 10.9
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              104.0,
+              21.0
+            ],
+            [
+              104.5,
+              21.0
+            ],
+            [
+              104.5,
+              21.5
+            ],
+            [
+              104.0,
+              21.5
+            ],
+            [
+              104.0,
+              21.0
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "date": "2026-04-30",
+        "dry_days_count": 1,
+        "grid_id": "42_208",
+        "grid_lat": 21.0,
+        "grid_lon": 104.0,
+        "lat": 21.25,
+        "lon": 104.25,
+        "model_prediction": 1.0,
+        "precipitation_sum": 0.0,
+        "precipitation_sum_7days": 13.0,
+        "relative_humidity_2m_min": 53.0,
+        "risk_label": "medium",
+        "risk_level": 1,
+        "risk_score": 0.5154973240460289,
+        "temperature_2m_max": 25.3,
+        "wind_speed_10m_max": 10.9
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              104.5,
+              21.0
+            ],
+            [
+              105.0,
+              21.0
+            ],
+            [
+              105.0,
+              21.5
+            ],
+            [
+              104.5,
+              21.5
+            ],
+            [
+              104.5,
+              21.0
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "date": "2026-04-30",
+        "dry_days_count": 1,
+        "grid_id": "42_209",
+        "grid_lat": 21.0,
+        "grid_lon": 104.5,
+        "lat": 21.25,
+        "lon": 104.75,
+        "model_prediction": 0.0,
+        "precipitation_sum": 0.0,
+        "precipitation_sum_7days": 38.6,
+        "relative_humidity_2m_min": 49.0,
+        "risk_label": "medium",
+        "risk_level": 1,
+        "risk_score": 0.46244828204363836,
+        "temperature_2m_max": 24.4,
+        "wind_speed_10m_max": 8.8
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              105.0,
+              21.0
+            ],
+            [
+              105.5,
+              21.0
+            ],
+            [
+              105.5,
+              21.5
+            ],
+            [
+              105.0,
+              21.5
+            ],
+            [
+              105.0,
+              21.0
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "date": "2026-04-30",
+        "dry_days_count": 1,
+        "grid_id": "42_210",
+        "grid_lat": 21.0,
+        "grid_lon": 105.0,
+        "lat": 21.25,
+        "lon": 105.25,
+        "model_prediction": 1.0,
+        "precipitation_sum": 0.0,
+        "precipitation_sum_7days": 12.899999999999999,
+        "relative_humidity_2m_min": 47.0,
+        "risk_label": "medium",
+        "risk_level": 1,
+        "risk_score": 0.5590842485089746,
+        "temperature_2m_max": 28.1,
+        "wind_speed_10m_max": 10.2
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              105.5,
+              21.0
+            ],
+            [
+              106.0,
+              21.0
+            ],
+            [
+              106.0,
+              21.5
+            ],
+            [
+              105.5,
+              21.5
+            ],
+            [
+              105.5,
+              21.0
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "date": "2026-04-30",
+        "dry_days_count": 1,
+        "grid_id": "42_211",
+        "grid_lat": 21.0,
+        "grid_lon": 105.5,
+        "lat": 21.25,
+        "lon": 105.75,
+        "model_prediction": 1.0,
+        "precipitation_sum": 0.0,
+        "precipitation_sum_7days": 12.0,
+        "relative_humidity_2m_min": 48.0,
+        "risk_label": "medium",
+        "risk_level": 1,
+        "risk_score": 0.5091324047532987,
+        "temperature_2m_max": 26.5,
+        "wind_speed_10m_max": 12.8
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              106.0,
+              21.0
+            ],
+            [
+              106.5,
+              21.0
+            ],
+            [
+              106.5,
+              21.5
+            ],
+            [
+              106.0,
+              21.5
+            ],
+            [
+              106.0,
+              21.0
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "date": "2026-04-30",
+        "dry_days_count": 1,
+        "grid_id": "42_212",
+        "grid_lat": 21.0,
+        "grid_lon": 106.0,
+        "lat": 21.25,
+        "lon": 106.25,
+        "model_prediction": 0.0,
+        "precipitation_sum": 0.0,
+        "precipitation_sum_7days": 27.6,
+        "relative_humidity_2m_min": 52.0,
+        "risk_label": "medium",
+        "risk_level": 1,
+        "risk_score": 0.4054500471411636,
+        "temperature_2m_max": 26.8,
+        "wind_speed_10m_max": 10.5
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              106.5,
+              21.0
+            ],
+            [
+              107.0,
+              21.0
+            ],
+            [
+              107.0,
+              21.5
+            ],
+            [
+              106.5,
+              21.5
+            ],
+            [
+              106.5,
+              21.0
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "date": "2026-04-30",
+        "dry_days_count": 1,
+        "grid_id": "42_213",
+        "grid_lat": 21.0,
+        "grid_lon": 106.5,
+        "lat": 21.25,
+        "lon": 106.75,
+        "model_prediction": 0.0,
+        "precipitation_sum": 0.0,
+        "precipitation_sum_7days": 24.700000000000003,
+        "relative_humidity_2m_min": 55.0,
+        "risk_label": "medium",
+        "risk_level": 1,
+        "risk_score": 0.46463746360023744,
+        "temperature_2m_max": 26.5,
+        "wind_speed_10m_max": 9.4
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              107.0,
+              21.0
+            ],
+            [
+              107.5,
+              21.0
+            ],
+            [
+              107.5,
+              21.5
+            ],
+            [
+              107.0,
+              21.5
+            ],
+            [
+              107.0,
+              21.0
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "date": "2026-04-30",
+        "dry_days_count": 1,
+        "grid_id": "42_214",
+        "grid_lat": 21.0,
+        "grid_lon": 107.0,
+        "lat": 21.25,
+        "lon": 107.25,
+        "model_prediction": 1.0,
+        "precipitation_sum": 0.0,
+        "precipitation_sum_7days": 37.2,
+        "relative_humidity_2m_min": 49.0,
+        "risk_label": "medium",
+        "risk_level": 1,
+        "risk_score": 0.5092158436136649,
+        "temperature_2m_max": 26.2,
+        "wind_speed_10m_max": 12.3
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              103.0,
+              21.5
+            ],
+            [
+              103.5,
+              21.5
+            ],
+            [
+              103.5,
+              22.0
+            ],
+            [
+              103.0,
+              22.0
+            ],
+            [
+              103.0,
+              21.5
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "date": "2026-04-30",
+        "dry_days_count": 0,
+        "grid_id": "43_206",
+        "grid_lat": 21.5,
+        "grid_lon": 103.0,
+        "lat": 21.75,
+        "lon": 103.25,
+        "model_prediction": 0.0,
+        "precipitation_sum": 6.0,
+        "precipitation_sum_7days": 56.400000000000006,
+        "relative_humidity_2m_min": 58.0,
+        "risk_label": "low",
+        "risk_level": 0,
+        "risk_score": 0.2916564011056403,
+        "temperature_2m_max": 27.2,
+        "wind_speed_10m_max": 8.6
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              103.5,
+              21.5
+            ],
+            [
+              104.0,
+              21.5
+            ],
+            [
+              104.0,
+              22.0
+            ],
+            [
+              103.5,
+              22.0
+            ],
+            [
+              103.5,
+              21.5
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "date": "2026-04-30",
+        "dry_days_count": 0,
+        "grid_id": "43_207",
+        "grid_lat": 21.5,
+        "grid_lon": 103.5,
+        "lat": 21.75,
+        "lon": 103.75,
+        "model_prediction": 0.0,
+        "precipitation_sum": 2.7,
+        "precipitation_sum_7days": 38.300000000000004,
+        "relative_humidity_2m_min": 62.0,
+        "risk_label": "low",
+        "risk_level": 0,
+        "risk_score": 0.25396349008729713,
+        "temperature_2m_max": 22.6,
+        "wind_speed_10m_max": 7.0
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              104.0,
+              21.5
+            ],
+            [
+              104.5,
+              21.5
+            ],
+            [
+              104.5,
+              22.0
+            ],
+            [
+              104.0,
+              22.0
+            ],
+            [
+              104.0,
+              21.5
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "date": "2026-04-30",
+        "dry_days_count": 1,
+        "grid_id": "43_208",
+        "grid_lat": 21.5,
+        "grid_lon": 104.0,
+        "lat": 21.75,
+        "lon": 104.25,
+        "model_prediction": 0.0,
+        "precipitation_sum": 0.0,
+        "precipitation_sum_7days": 39.7,
+        "relative_humidity_2m_min": 49.0,
+        "risk_label": "medium",
+        "risk_level": 1,
+        "risk_score": 0.4530137475349488,
+        "temperature_2m_max": 29.2,
+        "wind_speed_10m_max": 12.7
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              104.5,
+              21.5
+            ],
+            [
+              105.0,
+              21.5
+            ],
+            [
+              105.0,
+              22.0
+            ],
+            [
+              104.5,
+              22.0
+            ],
+            [
+              104.5,
+              21.5
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "date": "2026-04-30",
+        "dry_days_count": 1,
+        "grid_id": "43_209",
+        "grid_lat": 21.5,
+        "grid_lon": 104.5,
+        "lat": 21.75,
+        "lon": 104.75,
+        "model_prediction": 0.0,
+        "precipitation_sum": 0.0,
+        "precipitation_sum_7days": 19.3,
+        "relative_humidity_2m_min": 57.0,
+        "risk_label": "medium",
+        "risk_level": 1,
+        "risk_score": 0.3842509719844363,
+        "temperature_2m_max": 24.2,
+        "wind_speed_10m_max": 11.2
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              105.0,
+              21.5
+            ],
+            [
+              105.5,
+              21.5
+            ],
+            [
+              105.5,
+              22.0
+            ],
+            [
+              105.0,
+              22.0
+            ],
+            [
+              105.0,
+              21.5
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "date": "2026-04-30",
+        "dry_days_count": 1,
+        "grid_id": "43_210",
+        "grid_lat": 21.5,
+        "grid_lon": 105.0,
+        "lat": 21.75,
+        "lon": 105.25,
+        "model_prediction": 0.0,
+        "precipitation_sum": 0.0,
+        "precipitation_sum_7days": 21.0,
+        "relative_humidity_2m_min": 47.0,
+        "risk_label": "medium",
+        "risk_level": 1,
+        "risk_score": 0.48864511325695714,
+        "temperature_2m_max": 27.0,
+        "wind_speed_10m_max": 13.0
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              105.5,
+              21.5
+            ],
+            [
+              106.0,
+              21.5
+            ],
+            [
+              106.0,
+              22.0
+            ],
+            [
+              105.5,
+              22.0
+            ],
+            [
+              105.5,
+              21.5
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "date": "2026-04-30",
+        "dry_days_count": 0,
+        "grid_id": "43_211",
+        "grid_lat": 21.5,
+        "grid_lon": 105.5,
+        "lat": 21.75,
+        "lon": 105.75,
+        "model_prediction": 0.0,
+        "precipitation_sum": 0.1,
+        "precipitation_sum_7days": 34.300000000000004,
+        "relative_humidity_2m_min": 53.0,
+        "risk_label": "medium",
+        "risk_level": 1,
+        "risk_score": 0.36151311249984136,
+        "temperature_2m_max": 27.0,
+        "wind_speed_10m_max": 13.8
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              106.0,
+              21.5
+            ],
+            [
+              106.5,
+              21.5
+            ],
+            [
+              106.5,
+              22.0
+            ],
+            [
+              106.0,
+              22.0
+            ],
+            [
+              106.0,
+              21.5
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "date": "2026-04-30",
+        "dry_days_count": 1,
+        "grid_id": "43_212",
+        "grid_lat": 21.5,
+        "grid_lon": 106.0,
+        "lat": 21.75,
+        "lon": 106.25,
+        "model_prediction": 0.0,
+        "precipitation_sum": 0.0,
+        "precipitation_sum_7days": 28.2,
+        "relative_humidity_2m_min": 50.0,
+        "risk_label": "medium",
+        "risk_level": 1,
+        "risk_score": 0.42211915977264974,
+        "temperature_2m_max": 27.0,
+        "wind_speed_10m_max": 8.9
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              106.5,
+              21.5
+            ],
+            [
+              107.0,
+              21.5
+            ],
+            [
+              107.0,
+              22.0
+            ],
+            [
+              106.5,
+              22.0
+            ],
+            [
+              106.5,
+              21.5
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "date": "2026-04-30",
+        "dry_days_count": 1,
+        "grid_id": "43_213",
+        "grid_lat": 21.5,
+        "grid_lon": 106.5,
+        "lat": 21.75,
+        "lon": 106.75,
+        "model_prediction": 0.0,
+        "precipitation_sum": 0.0,
+        "precipitation_sum_7days": 26.9,
+        "relative_humidity_2m_min": 44.0,
+        "risk_label": "medium",
+        "risk_level": 1,
+        "risk_score": 0.4574047799798885,
+        "temperature_2m_max": 27.6,
+        "wind_speed_10m_max": 10.7
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              107.0,
+              21.5
+            ],
+            [
+              107.5,
+              21.5
+            ],
+            [
+              107.5,
+              22.0
+            ],
+            [
+              107.0,
+              22.0
+            ],
+            [
+              107.0,
+              21.5
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "date": "2026-04-30",
+        "dry_days_count": 1,
+        "grid_id": "43_214",
+        "grid_lat": 21.5,
+        "grid_lon": 107.0,
+        "lat": 21.75,
+        "lon": 107.25,
+        "model_prediction": 0.0,
+        "precipitation_sum": 0.0,
+        "precipitation_sum_7days": 25.3,
+        "relative_humidity_2m_min": 43.0,
+        "risk_label": "medium",
+        "risk_level": 1,
+        "risk_score": 0.4796906936006946,
+        "temperature_2m_max": 26.5,
+        "wind_speed_10m_max": 12.3
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              107.5,
+              21.5
+            ],
+            [
+              108.0,
+              21.5
+            ],
+            [
+              108.0,
+              22.0
+            ],
+            [
+              107.5,
+              22.0
+            ],
+            [
+              107.5,
+              21.5
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "date": "2026-04-30",
+        "dry_days_count": 1,
+        "grid_id": "43_215",
+        "grid_lat": 21.5,
+        "grid_lon": 107.5,
+        "lat": 21.75,
+        "lon": 107.75,
+        "model_prediction": 0.0,
+        "precipitation_sum": 0.0,
+        "precipitation_sum_7days": 51.9,
+        "relative_humidity_2m_min": 42.0,
+        "risk_label": "medium",
+        "risk_level": 1,
+        "risk_score": 0.4687559056735736,
+        "temperature_2m_max": 24.0,
+        "wind_speed_10m_max": 12.5
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              103.0,
+              22.0
+            ],
+            [
+              103.5,
+              22.0
+            ],
+            [
+              103.5,
+              22.5
+            ],
+            [
+              103.0,
+              22.5
+            ],
+            [
+              103.0,
+              22.0
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "date": "2026-04-30",
+        "dry_days_count": 0,
+        "grid_id": "44_206",
+        "grid_lat": 22.0,
+        "grid_lon": 103.0,
+        "lat": 22.25,
+        "lon": 103.25,
+        "model_prediction": 0.0,
+        "precipitation_sum": 38.6,
+        "precipitation_sum_7days": 98.80000000000001,
+        "relative_humidity_2m_min": 64.0,
+        "risk_label": "low",
+        "risk_level": 0,
+        "risk_score": 0.20344043177649354,
+        "temperature_2m_max": 20.7,
+        "wind_speed_10m_max": 7.4
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              103.5,
+              22.0
+            ],
+            [
+              104.0,
+              22.0
+            ],
+            [
+              104.0,
+              22.5
+            ],
+            [
+              103.5,
+              22.5
+            ],
+            [
+              103.5,
+              22.0
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "date": "2026-04-30",
+        "dry_days_count": 0,
+        "grid_id": "44_207",
+        "grid_lat": 22.0,
+        "grid_lon": 103.5,
+        "lat": 22.25,
+        "lon": 103.75,
+        "model_prediction": 0.0,
+        "precipitation_sum": 1.8,
+        "precipitation_sum_7days": 27.6,
+        "relative_humidity_2m_min": 56.0,
+        "risk_label": "low",
+        "risk_level": 0,
+        "risk_score": 0.2638812768740074,
+        "temperature_2m_max": 25.0,
+        "wind_speed_10m_max": 9.7
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              104.0,
+              22.0
+            ],
+            [
+              104.5,
+              22.0
+            ],
+            [
+              104.5,
+              22.5
+            ],
+            [
+              104.0,
+              22.5
+            ],
+            [
+              104.0,
+              22.0
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "date": "2026-04-30",
+        "dry_days_count": 0,
+        "grid_id": "44_208",
+        "grid_lat": 22.0,
+        "grid_lon": 104.0,
+        "lat": 22.25,
+        "lon": 104.25,
+        "model_prediction": 0.0,
+        "precipitation_sum": 0.2,
+        "precipitation_sum_7days": 32.5,
+        "relative_humidity_2m_min": 64.0,
+        "risk_label": "low",
+        "risk_level": 0,
+        "risk_score": 0.23185001131847166,
+        "temperature_2m_max": 20.9,
+        "wind_speed_10m_max": 6.8
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              104.5,
+              22.0
+            ],
+            [
+              105.0,
+              22.0
+            ],
+            [
+              105.0,
+              22.5
+            ],
+            [
+              104.5,
+              22.5
+            ],
+            [
+              104.5,
+              22.0
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "date": "2026-04-30",
+        "dry_days_count": 1,
+        "grid_id": "44_209",
+        "grid_lat": 22.0,
+        "grid_lon": 104.5,
+        "lat": 22.25,
+        "lon": 104.75,
+        "model_prediction": 0.0,
+        "precipitation_sum": 0.0,
+        "precipitation_sum_7days": 38.3,
+        "relative_humidity_2m_min": 52.0,
+        "risk_label": "medium",
+        "risk_level": 1,
+        "risk_score": 0.3500030213038993,
+        "temperature_2m_max": 26.4,
+        "wind_speed_10m_max": 10.0
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              105.0,
+              22.0
+            ],
+            [
+              105.5,
+              22.0
+            ],
+            [
+              105.5,
+              22.5
+            ],
+            [
+              105.0,
+              22.5
+            ],
+            [
+              105.0,
+              22.0
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "date": "2026-04-30",
+        "dry_days_count": 1,
+        "grid_id": "44_210",
+        "grid_lat": 22.0,
+        "grid_lon": 105.0,
+        "lat": 22.25,
+        "lon": 105.25,
+        "model_prediction": 0.0,
+        "precipitation_sum": 0.0,
+        "precipitation_sum_7days": 42.0,
+        "relative_humidity_2m_min": 47.0,
+        "risk_label": "medium",
+        "risk_level": 1,
+        "risk_score": 0.39081544775338056,
+        "temperature_2m_max": 26.9,
+        "wind_speed_10m_max": 9.9
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              105.5,
+              22.0
+            ],
+            [
+              106.0,
+              22.0
+            ],
+            [
+              106.0,
+              22.5
+            ],
+            [
+              105.5,
+              22.5
+            ],
+            [
+              105.5,
+              22.0
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "date": "2026-04-30",
+        "dry_days_count": 1,
+        "grid_id": "44_211",
+        "grid_lat": 22.0,
+        "grid_lon": 105.5,
+        "lat": 22.25,
+        "lon": 105.75,
+        "model_prediction": 0.0,
+        "precipitation_sum": 0.0,
+        "precipitation_sum_7days": 35.5,
+        "relative_humidity_2m_min": 49.0,
+        "risk_label": "medium",
+        "risk_level": 1,
+        "risk_score": 0.35236213469210703,
+        "temperature_2m_max": 25.1,
+        "wind_speed_10m_max": 13.9
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              106.0,
+              22.0
+            ],
+            [
+              106.5,
+              22.0
+            ],
+            [
+              106.5,
+              22.5
+            ],
+            [
+              106.0,
+              22.5
+            ],
+            [
+              106.0,
+              22.0
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "date": "2026-04-30",
+        "dry_days_count": 1,
+        "grid_id": "44_212",
+        "grid_lat": 22.0,
+        "grid_lon": 106.0,
+        "lat": 22.25,
+        "lon": 106.25,
+        "model_prediction": 0.0,
+        "precipitation_sum": 0.0,
+        "precipitation_sum_7days": 36.6,
+        "relative_humidity_2m_min": 43.0,
+        "risk_label": "medium",
+        "risk_level": 1,
+        "risk_score": 0.4121742107011158,
+        "temperature_2m_max": 26.7,
+        "wind_speed_10m_max": 14.2
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              106.5,
+              22.0
+            ],
+            [
+              107.0,
+              22.0
+            ],
+            [
+              107.0,
+              22.5
+            ],
+            [
+              106.5,
+              22.5
+            ],
+            [
+              106.5,
+              22.0
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "date": "2026-04-30",
+        "dry_days_count": 1,
+        "grid_id": "44_213",
+        "grid_lat": 22.0,
+        "grid_lon": 106.5,
+        "lat": 22.25,
+        "lon": 106.75,
+        "model_prediction": 0.0,
+        "precipitation_sum": 0.0,
+        "precipitation_sum_7days": 29.599999999999998,
+        "relative_humidity_2m_min": 44.0,
+        "risk_label": "medium",
+        "risk_level": 1,
+        "risk_score": 0.348151408842343,
+        "temperature_2m_max": 25.5,
+        "wind_speed_10m_max": 13.2
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              102.5,
+              22.5
+            ],
+            [
+              103.0,
+              22.5
+            ],
+            [
+              103.0,
+              23.0
+            ],
+            [
+              102.5,
+              23.0
+            ],
+            [
+              102.5,
+              22.5
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "date": "2026-04-30",
+        "dry_days_count": 0,
+        "grid_id": "45_205",
+        "grid_lat": 22.5,
+        "grid_lon": 102.5,
+        "lat": 22.75,
+        "lon": 102.75,
+        "model_prediction": 0.0,
+        "precipitation_sum": 8.4,
+        "precipitation_sum_7days": 58.29999999999999,
+        "relative_humidity_2m_min": 62.0,
+        "risk_label": "low",
+        "risk_level": 0,
+        "risk_score": 0.1699402673525188,
+        "temperature_2m_max": 22.5,
+        "wind_speed_10m_max": 5.6
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              103.0,
+              22.5
+            ],
+            [
+              103.5,
+              22.5
+            ],
+            [
+              103.5,
+              23.0
+            ],
+            [
+              103.0,
+              23.0
+            ],
+            [
+              103.0,
+              22.5
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "date": "2026-04-30",
+        "dry_days_count": 0,
+        "grid_id": "45_206",
+        "grid_lat": 22.5,
+        "grid_lon": 103.0,
+        "lat": 22.75,
+        "lon": 103.25,
+        "model_prediction": 0.0,
+        "precipitation_sum": 3.1,
+        "precipitation_sum_7days": 26.3,
+        "relative_humidity_2m_min": 70.0,
+        "risk_label": "low",
+        "risk_level": 0,
+        "risk_score": 0.1573459804685308,
+        "temperature_2m_max": 17.8,
+        "wind_speed_10m_max": 6.0
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              103.5,
+              22.5
+            ],
+            [
+              104.0,
+              22.5
+            ],
+            [
+              104.0,
+              23.0
+            ],
+            [
+              103.5,
+              23.0
+            ],
+            [
+              103.5,
+              22.5
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "date": "2026-04-30",
+        "dry_days_count": 0,
+        "grid_id": "45_207",
+        "grid_lat": 22.5,
+        "grid_lon": 103.5,
+        "lat": 22.75,
+        "lon": 103.75,
+        "model_prediction": 0.0,
+        "precipitation_sum": 0.3,
+        "precipitation_sum_7days": 19.999999999999996,
+        "relative_humidity_2m_min": 66.0,
+        "risk_label": "low",
+        "risk_level": 0,
+        "risk_score": 0.1676729097540278,
+        "temperature_2m_max": 21.6,
+        "wind_speed_10m_max": 11.0
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              104.0,
+              22.5
+            ],
+            [
+              104.5,
+              22.5
+            ],
+            [
+              104.5,
+              23.0
+            ],
+            [
+              104.0,
+              23.0
+            ],
+            [
+              104.0,
+              22.5
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "date": "2026-04-30",
+        "dry_days_count": 1,
+        "grid_id": "45_208",
+        "grid_lat": 22.5,
+        "grid_lon": 104.0,
+        "lat": 22.75,
+        "lon": 104.25,
+        "model_prediction": 0.0,
+        "precipitation_sum": 0.0,
+        "precipitation_sum_7days": 7.7,
+        "relative_humidity_2m_min": 57.0,
+        "risk_label": "medium",
+        "risk_level": 1,
+        "risk_score": 0.3497358161620973,
+        "temperature_2m_max": 24.1,
+        "wind_speed_10m_max": 7.4
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              104.5,
+              22.5
+            ],
+            [
+              105.0,
+              22.5
+            ],
+            [
+              105.0,
+              23.0
+            ],
+            [
+              104.5,
+              23.0
+            ],
+            [
+              104.5,
+              22.5
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "date": "2026-04-30",
+        "dry_days_count": 1,
+        "grid_id": "45_209",
+        "grid_lat": 22.5,
+        "grid_lon": 104.5,
+        "lat": 22.75,
+        "lon": 104.75,
+        "model_prediction": 0.0,
+        "precipitation_sum": 0.0,
+        "precipitation_sum_7days": 39.4,
+        "relative_humidity_2m_min": 53.0,
+        "risk_label": "low",
+        "risk_level": 0,
+        "risk_score": 0.30205988177969484,
+        "temperature_2m_max": 24.4,
+        "wind_speed_10m_max": 8.6
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              105.0,
+              22.5
+            ],
+            [
+              105.5,
+              22.5
+            ],
+            [
+              105.5,
+              23.0
+            ],
+            [
+              105.0,
+              23.0
+            ],
+            [
+              105.0,
+              22.5
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "date": "2026-04-30",
+        "dry_days_count": 1,
+        "grid_id": "45_210",
+        "grid_lat": 22.5,
+        "grid_lon": 105.0,
+        "lat": 22.75,
+        "lon": 105.25,
+        "model_prediction": 0.0,
+        "precipitation_sum": 0.0,
+        "precipitation_sum_7days": 35.2,
+        "relative_humidity_2m_min": 46.0,
+        "risk_label": "medium",
+        "risk_level": 1,
+        "risk_score": 0.35949209686330197,
+        "temperature_2m_max": 26.2,
+        "wind_speed_10m_max": 9.7
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              105.5,
+              22.5
+            ],
+            [
+              106.0,
+              22.5
+            ],
+            [
+              106.0,
+              23.0
+            ],
+            [
+              105.5,
+              23.0
+            ],
+            [
+              105.5,
+              22.5
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "date": "2026-04-30",
+        "dry_days_count": 1,
+        "grid_id": "45_211",
+        "grid_lat": 22.5,
+        "grid_lon": 105.5,
+        "lat": 22.75,
+        "lon": 105.75,
+        "model_prediction": 0.0,
+        "precipitation_sum": 0.0,
+        "precipitation_sum_7days": 29.4,
+        "relative_humidity_2m_min": 43.0,
+        "risk_label": "medium",
+        "risk_level": 1,
+        "risk_score": 0.4010103212095699,
+        "temperature_2m_max": 27.7,
+        "wind_speed_10m_max": 10.6
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              106.0,
+              22.5
+            ],
+            [
+              106.5,
+              22.5
+            ],
+            [
+              106.5,
+              23.0
+            ],
+            [
+              106.0,
+              23.0
+            ],
+            [
+              106.0,
+              22.5
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "date": "2026-04-30",
+        "dry_days_count": 1,
+        "grid_id": "45_212",
+        "grid_lat": 22.5,
+        "grid_lon": 106.0,
+        "lat": 22.75,
+        "lon": 106.25,
+        "model_prediction": 0.0,
+        "precipitation_sum": 0.0,
+        "precipitation_sum_7days": 29.299999999999997,
+        "relative_humidity_2m_min": 44.0,
+        "risk_label": "medium",
+        "risk_level": 1,
+        "risk_score": 0.3502397094565443,
+        "temperature_2m_max": 26.8,
+        "wind_speed_10m_max": 11.1
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              106.5,
+              22.5
+            ],
+            [
+              107.0,
+              22.5
+            ],
+            [
+              107.0,
+              23.0
+            ],
+            [
+              106.5,
+              23.0
+            ],
+            [
+              106.5,
+              22.5
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "date": "2026-04-30",
+        "dry_days_count": 1,
+        "grid_id": "45_213",
+        "grid_lat": 22.5,
+        "grid_lon": 106.5,
+        "lat": 22.75,
+        "lon": 106.75,
+        "model_prediction": 0.0,
+        "precipitation_sum": 0.0,
+        "precipitation_sum_7days": 48.0,
+        "relative_humidity_2m_min": 44.0,
+        "risk_label": "low",
+        "risk_level": 0,
+        "risk_score": 0.26065427189443396,
+        "temperature_2m_max": 24.9,
+        "wind_speed_10m_max": 7.3
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              105.0,
+              23.0
+            ],
+            [
+              105.5,
+              23.0
+            ],
+            [
+              105.5,
+              23.5
+            ],
+            [
+              105.0,
+              23.5
+            ],
+            [
+              105.0,
+              23.0
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "date": "2026-04-30",
+        "dry_days_count": 1,
+        "grid_id": "46_210",
+        "grid_lat": 23.0,
+        "grid_lon": 105.0,
+        "lat": 23.25,
+        "lon": 105.25,
+        "model_prediction": 0.0,
+        "precipitation_sum": 0.0,
+        "precipitation_sum_7days": 44.599999999999994,
+        "relative_humidity_2m_min": 49.0,
+        "risk_label": "low",
+        "risk_level": 0,
+        "risk_score": 0.24307914812744616,
+        "temperature_2m_max": 20.8,
+        "wind_speed_10m_max": 11.8
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              105.5,
+              23.0
+            ],
+            [
+              106.0,
+              23.0
+            ],
+            [
+              106.0,
+              23.5
+            ],
+            [
+              105.5,
+              23.5
+            ],
+            [
+              105.5,
+              23.0
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "date": "2026-04-30",
+        "dry_days_count": 1,
+        "grid_id": "46_211",
+        "grid_lat": 23.0,
+        "grid_lon": 105.5,
+        "lat": 23.25,
+        "lon": 105.75,
+        "model_prediction": 0.0,
+        "precipitation_sum": 0.0,
+        "precipitation_sum_7days": 58.2,
+        "relative_humidity_2m_min": 42.0,
+        "risk_label": "medium",
+        "risk_level": 1,
+        "risk_score": 0.36548266910544425,
+        "temperature_2m_max": 29.3,
+        "wind_speed_10m_max": 9.3
+      },
+      "type": "Feature"
+    }
+  ],
+  "type": "FeatureCollection"
+}

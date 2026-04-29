@@ -10,3 +10,4 @@ pyarrow
 meteostat
 pyspark
 numpy
+scikit-learn

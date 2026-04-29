@@ -1,0 +1,12 @@
+{
+  "cluster_count": 8,
+  "clustered_point_count": 41,
+  "cutoff_timestamp": "2024-12-30T19:11:00",
+  "eps_degrees": 0.05,
+  "latest_timestamp": "2024-12-31T19:11:00",
+  "min_samples": 3,
+  "noise_point_count": 45,
+  "point_count": 86,
+  "status": "ok",
+  "window_hours": 24
+}

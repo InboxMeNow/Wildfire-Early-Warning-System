@@ -1,0 +1,52 @@
+{
+  "type": "FeatureCollection",
+  "metadata": {
+    "latest_date": "2024-12-31",
+    "grid_count": 113,
+    "anomaly_count": 2,
+    "z_threshold": 3.0,
+    "rule": "count_today > historical_mean + z_threshold * historical_std"
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "grid_id": "45_213",
+        "date": "2024-12-31",
+        "fire_count": 1,
+        "historical_mean": 0.04381161007667032,
+        "historical_std": 0.317951552434124,
+        "threshold": 0.9976662673790423,
+        "z_score": 3.007339900066823,
+        "history_days": 1826
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.5,
+          22.5
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "grid_id": "18_210",
+        "date": "2024-12-31",
+        "fire_count": 10,
+        "historical_mean": 0.49671412924424974,
+        "historical_std": 1.4204919627774468,
+        "threshold": 4.75819001757659,
+        "z_score": 6.690137022791914,
+        "history_days": 1826
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          105.0,
+          9.0
+        ]
+      }
+    }
+  ]
+}

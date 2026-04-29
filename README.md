@@ -1,14 +1,15 @@
 # Wildfire Early Warning System
 
-Week 1 data and ML pipeline for a wildfire risk early-warning project. The pipeline collects NASA FIRMS fire detections and weather data, cleans them with Spark on MinIO, builds 0.5 degree grid-day features, creates a first visualization, and trains a baseline Spark ML model.
+Data and ML pipeline for a wildfire risk early-warning project in Vietnam. The pipeline collects NASA FIRMS fire detections and weather data, cleans them with Spark on MinIO, builds 0.5 degree grid-day features, visualizes historical fire density, trains Spark ML risk models, and produces near-real-time DBSCAN clusters plus anomaly alerts.
 
 ## Architecture
 
 - `MinIO`: local object storage. The default bucket is `wildfire-data`.
-- `Spark`: PySpark ETL and ML jobs that read/write MinIO through `s3a://`.
+- `Spark`: PySpark ETL, feature engineering, and ML jobs that read/write MinIO through `s3a://`.
 - `NASA FIRMS`: historical active fire detections for the area around Vietnam, 2020-2024.
 - `Meteostat/Open-Meteo`: daily weather data on a grid around Vietnam.
 - `geo/vietnam_boundary.geojson`: Vietnam boundary mask used during cleaning so downstream datasets only keep records inside Vietnam.
+- `scikit-learn`: local DBSCAN clustering for recent fire points and lightweight anomaly-detection utilities.
 
 ## Setup
 
@@ -51,7 +52,7 @@ MINIO_BUCKET=wildfire-data
 
 When running inside the Docker network, `docker-compose.yml` sets `MINIO_ENDPOINT=http://minio:9000` for Spark.
 
-## Week 1 Pipeline
+## Pipeline
 
 ### 1. FIRMS NRT Exploration
 
@@ -129,7 +130,7 @@ Output:
 - Report: `reports/data_quality_week1.md`
 - Heatmap: `maps/fires_heatmap_2020_2024.html`
 
-### 7. Baseline ML Training
+### 7. Spark ML Training
 
 Notebook:
 
@@ -148,10 +149,41 @@ Processing steps:
 - Read `s3a://wildfire-data/features/`.
 - Time-based split: train on 2020-2023, test on 2024.
 - Compute class weights for `fire_occurred`.
-- Train Spark MLlib `RandomForestClassifier`.
+- Tune Spark MLlib `RandomForestClassifier` with `CrossValidator`.
+- Train and compare a Spark MLlib `GBTClassifier`.
 - Evaluate AUC-ROC, precision, recall, and F1.
-- Save the model to `s3a://wildfire-data/models/random_forest_fire_baseline/`.
+- Save the RF model to `s3a://wildfire-data/models/random_forest_fire_baseline/`.
+- Save the GBT model to `s3a://wildfire-data/models/gbt_fire_baseline/`.
 - Save metrics and feature importance artifacts to `reports/`.
+
+### 8. Recent Fire Clustering
+
+```powershell
+python 07_dbscan_clustering.py
+```
+
+Processing steps:
+
+- Read cleaned fire points from `s3://wildfire-data/firms_clean/`.
+- Select points from the latest 24-hour window in the dataset.
+- Run `DBSCAN(eps=0.05, min_samples=3)` on latitude/longitude.
+- Build a convex hull for each cluster.
+- Save GeoJSON and metadata locally under `reports/`.
+- Upload the latest cluster outputs to `s3://wildfire-data/models/dbscan_fire_clusters/`.
+
+### 9. Fire Anomaly Detection
+
+```powershell
+python 08_anomaly_detection.py
+```
+
+Processing steps:
+
+- Read feature rows from `s3://wildfire-data/features/`.
+- Compute each grid cell's historical daily fire-count mean and standard deviation.
+- Score the latest date with a simple z-score rule: `fire_count > mean + 3 * std`.
+- Save anomaly GeoJSON, detector stats, and metadata locally under `reports/`.
+- Upload the latest detector outputs to `s3://wildfire-data/models/fire_anomaly_detector/`.
 
 ## Current Results
 
@@ -162,7 +194,11 @@ Latest run after applying the Vietnam boundary mask:
 - `features`: 206,451 rows, 113 grid cells, 20 columns
 - Date range: `2020-01-01` to `2024-12-31`
 - Data quality: PASS, no duplicate `(grid_id, date)` rows, labels match `fire_count`
-- Baseline RF AUC-ROC on 2024 test data: 0.8369
+- Tuned RF AUC-ROC on 2024 test data: 0.8516
+- GBT AUC-ROC on 2024 test data: 0.8614
+- Best current Spark risk model by AUC-ROC: `gbt`
+- Latest DBSCAN run: 86 fire points in the latest 24-hour window, 8 clusters
+- Latest anomaly run: 2 anomalous grids on `2024-12-31`
 
 Label distribution:
 
@@ -179,7 +215,9 @@ Label distribution:
 04_etl_clean.py                  # Spark cleaning ETL
 05_feature_engineering.py        # Spark spatial join + ML features
 06_data_quality_and_heatmap.py   # Data quality report + heatmap
-07_train_model.py                # Spark MLlib RandomForest baseline
+07_train_model.py                # Spark MLlib RF tuning + GBT comparison
+07_dbscan_clustering.py          # DBSCAN recent fire clusters + GeoJSON
+08_anomaly_detection.py          # Grid-level z-score anomaly detection
 geo_utils.py                     # GeoJSON point-in-polygon helpers
 geo/vietnam_boundary.geojson     # Vietnam country boundary mask
 docker-compose.yml               # Local MinIO + Spark stack

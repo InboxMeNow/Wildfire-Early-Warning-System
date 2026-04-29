@@ -1,0 +1,325 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "cluster_id": 0,
+        "point_count": 3,
+        "mean_confidence_score": 50.0,
+        "max_frp": 4.69,
+        "start_time": "2024-12-31T06:15:00",
+        "end_time": "2024-12-31T06:15:00",
+        "eps_degrees": 0.05,
+        "min_samples": 3
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              105.23548,
+              9.49729
+            ],
+            [
+              105.24108,
+              9.48452
+            ],
+            [
+              105.24863,
+              9.48228
+            ],
+            [
+              105.23548,
+              9.49729
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "cluster_id": 1,
+        "point_count": 11,
+        "mean_confidence_score": 50.0,
+        "max_frp": 4.64,
+        "start_time": "2024-12-31T06:15:00",
+        "end_time": "2024-12-31T06:38:00",
+        "eps_degrees": 0.05,
+        "min_samples": 3
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              105.854,
+              9.79807
+            ],
+            [
+              105.85954,
+              9.78535
+            ],
+            [
+              105.92736,
+              9.78547
+            ],
+            [
+              105.95921,
+              9.81065
+            ],
+            [
+              105.94269,
+              9.8251
+            ],
+            [
+              105.88481,
+              9.82988
+            ],
+            [
+              105.854,
+              9.79807
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "cluster_id": 2,
+        "point_count": 4,
+        "mean_confidence_score": 50.0,
+        "max_frp": 6.09,
+        "start_time": "2024-12-31T06:15:00",
+        "end_time": "2024-12-31T06:38:00",
+        "eps_degrees": 0.05,
+        "min_samples": 3
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              105.94659,
+              10.75093
+            ],
+            [
+              105.9519,
+              10.75295
+            ],
+            [
+              105.94788,
+              10.75574
+            ],
+            [
+              105.94659,
+              10.75093
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "cluster_id": 3,
+        "point_count": 3,
+        "mean_confidence_score": 50.0,
+        "max_frp": 0.48,
+        "start_time": "2024-12-31T18:48:00",
+        "end_time": "2024-12-31T19:10:00",
+        "eps_degrees": 0.05,
+        "min_samples": 3
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              105.86667,
+              20.53171
+            ],
+            [
+              105.87996,
+              20.48371
+            ],
+            [
+              105.88066,
+              20.48314
+            ],
+            [
+              105.86667,
+              20.53171
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "cluster_id": 4,
+        "point_count": 3,
+        "mean_confidence_score": 50.0,
+        "max_frp": 0.56,
+        "start_time": "2024-12-31T18:47:00",
+        "end_time": "2024-12-31T19:10:00",
+        "eps_degrees": 0.05,
+        "min_samples": 3
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              105.77527,
+              21.00297
+            ],
+            [
+              105.77599,
+              21.00082
+            ],
+            [
+              105.77548,
+              21.00327
+            ],
+            [
+              105.77527,
+              21.00297
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "cluster_id": 5,
+        "point_count": 10,
+        "mean_confidence_score": 50.0,
+        "max_frp": 1.53,
+        "start_time": "2024-12-31T18:47:00",
+        "end_time": "2024-12-31T19:10:00",
+        "eps_degrees": 0.05,
+        "min_samples": 3
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              106.52606,
+              21.01955
+            ],
+            [
+              106.52858,
+              21.01636
+            ],
+            [
+              106.53816,
+              21.00867
+            ],
+            [
+              106.53928,
+              21.01098
+            ],
+            [
+              106.53952,
+              21.014
+            ],
+            [
+              106.53953,
+              21.01494
+            ],
+            [
+              106.52969,
+              21.01874
+            ],
+            [
+              106.52606,
+              21.01955
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "cluster_id": 6,
+        "point_count": 4,
+        "mean_confidence_score": 50.0,
+        "max_frp": 1.79,
+        "start_time": "2024-12-31T18:47:00",
+        "end_time": "2024-12-31T19:10:00",
+        "eps_degrees": 0.05,
+        "min_samples": 3
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              107.8148,
+              21.55287
+            ],
+            [
+              107.81676,
+              21.55262
+            ],
+            [
+              107.81759,
+              21.55655
+            ],
+            [
+              107.81619,
+              21.55858
+            ],
+            [
+              107.8148,
+              21.55287
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "cluster_id": 7,
+        "point_count": 3,
+        "mean_confidence_score": 50.0,
+        "max_frp": 3.64,
+        "start_time": "2024-12-31T06:15:00",
+        "end_time": "2024-12-31T06:38:00",
+        "eps_degrees": 0.05,
+        "min_samples": 3
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              105.46575,
+              9.27252
+            ],
+            [
+              105.52699,
+              9.2711
+            ],
+            [
+              105.48347,
+              9.27462
+            ],
+            [
+              105.46575,
+              9.27252
+            ]
+          ]
+        ]
+      }
+    }
+  ]
+}

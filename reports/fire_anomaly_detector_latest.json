@@ -1,0 +1,7 @@
+{
+  "anomaly_count": 2,
+  "grid_count": 113,
+  "latest_date": "2024-12-31",
+  "rule": "count_today > historical_mean + z_threshold * historical_std",
+  "z_threshold": 3.0
+}

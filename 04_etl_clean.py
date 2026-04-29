@@ -36,9 +36,10 @@ import argparse
 import os
 from pathlib import Path
 
+from geo_utils import load_geojson_polygons, polygon_bbox
 from pyspark.sql import DataFrame, SparkSession
 from pyspark.sql import functions as F
-from pyspark.sql.types import DateType, StringType
+from pyspark.sql.types import BooleanType, DateType, StringType
 
 
 DEFAULT_MINIO_ENDPOINT = "http://localhost:9000"
@@ -46,6 +47,7 @@ DEFAULT_MINIO_ACCESS_KEY = "minioadmin"
 DEFAULT_MINIO_SECRET_KEY = "minioadmin"
 DEFAULT_MINIO_BUCKET = "wildfire-data"
 DEFAULT_HADOOP_AWS_PACKAGE = "org.apache.hadoop:hadoop-aws:3.3.4"
+DEFAULT_COUNTRY_BOUNDARY = Path("geo/vietnam_boundary.geojson")
 
 
 def load_env_file(path: Path = Path(".env")) -> None:
@@ -112,6 +114,50 @@ def drop_duplicates(frame: DataFrame, preferred_subset: list[str]) -> DataFrame:
     if subset:
         return frame.dropDuplicates(subset)
     return frame.dropDuplicates()
+
+
+def filter_to_country_boundary(
+    frame: DataFrame,
+    boundary_path: Path,
+    latitude_column: str = "latitude",
+    longitude_column: str = "longitude",
+) -> DataFrame:
+    polygons = load_geojson_polygons(boundary_path)
+    min_lon, min_lat, max_lon, max_lat = polygon_bbox(polygons)
+
+    def point_in_ring(lon: float, lat: float, ring: list[tuple[float, float]]) -> bool:
+        inside = False
+        previous_lon, previous_lat = ring[-1]
+
+        for current_lon, current_lat in ring:
+            crosses = (current_lat > lat) != (previous_lat > lat)
+            if crosses:
+                slope_lon = (previous_lon - current_lon) * (lat - current_lat)
+                slope_lon = slope_lon / (previous_lat - current_lat) + current_lon
+                if lon < slope_lon:
+                    inside = not inside
+            previous_lon, previous_lat = current_lon, current_lat
+
+        return inside
+
+    def point_in_polygon(lon: float, lat: float, polygon: list[list[tuple[float, float]]]) -> bool:
+        if not polygon or not point_in_ring(lon, lat, polygon[0]):
+            return False
+        return not any(point_in_ring(lon, lat, hole) for hole in polygon[1:])
+
+    def contains_vietnam(lon: float | None, lat: float | None) -> bool:
+        if lon is None or lat is None:
+            return False
+        lon = float(lon)
+        lat = float(lat)
+        return any(point_in_polygon(lon, lat, polygon) for polygon in polygons)
+
+    contains_udf = F.udf(contains_vietnam, BooleanType())
+    return (
+        frame.filter(F.col(longitude_column).between(min_lon, max_lon))
+        .filter(F.col(latitude_column).between(min_lat, max_lat))
+        .filter(contains_udf(F.col(longitude_column), F.col(latitude_column)))
+    )
 
 
 def clean_fires(fires: DataFrame, confidence_threshold: int) -> DataFrame:
@@ -207,6 +253,17 @@ def parse_args() -> argparse.Namespace:
         default=os.getenv("WEATHER_CLEAN_PREFIX", "weather_clean"),
     )
     parser.add_argument(
+        "--country-boundary",
+        type=Path,
+        default=Path(os.getenv("COUNTRY_BOUNDARY", str(DEFAULT_COUNTRY_BOUNDARY))),
+        help="GeoJSON Polygon/MultiPolygon used to keep only Vietnam points.",
+    )
+    parser.add_argument(
+        "--skip-country-mask",
+        action="store_true",
+        help="Disable Vietnam boundary filtering. Mainly useful for debugging raw bbox data.",
+    )
+    parser.add_argument(
         "--confidence-threshold",
         type=int,
         default=int(os.getenv("FIRES_CONFIDENCE_THRESHOLD", "30")),
@@ -226,6 +283,8 @@ def parse_args() -> argparse.Namespace:
         parser.error("--minio-endpoint must not be empty")
     if not 0 <= args.confidence_threshold <= 100:
         parser.error("--confidence-threshold must be in 0..100")
+    if not args.skip_country_mask and not args.country_boundary.exists():
+        parser.error(f"--country-boundary not found: {args.country_boundary}")
     return args
 
 
@@ -241,6 +300,10 @@ def main() -> int:
     try:
         fires = spark.read.parquet(fires_input)
         weather = spark.read.parquet(weather_input)
+
+        if not args.skip_country_mask:
+            fires = filter_to_country_boundary(fires, args.country_boundary)
+            weather = filter_to_country_boundary(weather, args.country_boundary)
 
         fires_clean = clean_fires(fires, args.confidence_threshold)
         weather_clean = clean_weather(weather)

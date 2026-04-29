@@ -30,6 +30,8 @@ import pyarrow.fs as pafs
 from botocore.client import Config
 from folium.plugins import HeatMap
 
+from geo_utils import load_geojson, load_geojson_polygons, point_in_polygons, polygon_bbox
+
 
 DEFAULT_MINIO_ENDPOINT = "http://localhost:9000"
 DEFAULT_MINIO_ACCESS_KEY = "minioadmin"
@@ -188,11 +190,24 @@ def profile_features(features_dataset: ds.Dataset) -> tuple[dict[str, Any], list
 def build_heatmap(
     firms_dataset: ds.Dataset,
     grid_size: float,
+    boundary_path: Path,
     output_path: Path,
 ) -> pd.DataFrame:
+    polygons = load_geojson_polygons(boundary_path)
+    min_lon, min_lat, max_lon, max_lat = polygon_bbox(polygons)
     table = firms_dataset.to_table(columns=["latitude", "longitude", "acq_date"])
     frame = table.to_pandas()
     frame = frame[(frame["acq_date"] >= date(2020, 1, 1)) & (frame["acq_date"] <= date(2024, 12, 31))]
+    frame = frame[
+        frame["longitude"].between(min_lon, max_lon)
+        & frame["latitude"].between(min_lat, max_lat)
+    ].copy()
+    frame = frame[
+        [
+            point_in_polygons(lon, lat, polygons)
+            for lon, lat in zip(frame["longitude"], frame["latitude"])
+        ]
+    ].copy()
 
     frame["grid_lat"] = (frame["latitude"] / grid_size).map(math.floor) * grid_size
     frame["grid_lon"] = (frame["longitude"] / grid_size).map(math.floor) * grid_size
@@ -206,6 +221,16 @@ def build_heatmap(
     heat["center_lon"] = heat["grid_lon"] + grid_size / 2
 
     fire_map = folium.Map(location=[16.0, 106.0], zoom_start=5, tiles="CartoDB positron")
+    folium.GeoJson(
+        load_geojson(boundary_path),
+        name="Vietnam boundary",
+        style_function=lambda _: {
+            "color": "#111827",
+            "weight": 2,
+            "fillColor": "#ffffff",
+            "fillOpacity": 0.03,
+        },
+    ).add_to(fire_map)
     HeatMap(
         heat[["center_lat", "center_lon", "fire_count"]].values.tolist(),
         name="Fire detections 2020-2024",
@@ -320,6 +345,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--firms-prefix", default=os.getenv("FIRES_CLEAN_PREFIX", "firms_clean"))
     parser.add_argument("--weather-prefix", default=os.getenv("WEATHER_CLEAN_PREFIX", "weather_clean"))
     parser.add_argument("--features-prefix", default=os.getenv("FEATURES_PREFIX", "features"))
+    parser.add_argument(
+        "--country-boundary",
+        type=Path,
+        default=Path(os.getenv("COUNTRY_BOUNDARY", "geo/vietnam_boundary.geojson")),
+        help="GeoJSON Polygon/MultiPolygon used to keep heatmap points inside Vietnam.",
+    )
     parser.add_argument("--grid-size", type=float, default=float(os.getenv("GRID_SIZE", "0.5")))
     parser.add_argument("--report-output", type=Path, default=Path("reports/data_quality_week1.md"))
     parser.add_argument("--heatmap-output", type=Path, default=Path("maps/fires_heatmap_2020_2024.html"))
@@ -327,6 +358,8 @@ def parse_args() -> argparse.Namespace:
     args = parser.parse_args()
     if args.grid_size <= 0:
         parser.error("--grid-size must be positive")
+    if not args.country_boundary.exists():
+        parser.error(f"--country-boundary not found: {args.country_boundary}")
     return args
 
 
@@ -342,7 +375,7 @@ def main() -> int:
     weather_profile = table_profile(weather, ["date", "latitude", "longitude", "precipitation_sum"])
     features_profile, issues = profile_features(features)
 
-    heat = build_heatmap(firms, args.grid_size, args.heatmap_output)
+    heat = build_heatmap(firms, args.grid_size, args.country_boundary, args.heatmap_output)
 
     object_profiles = {
         args.firms_prefix: list_parquet_objects(args, args.firms_prefix),

@@ -6,8 +6,9 @@ Pipeline du lieu tuan 1 cho bai toan canh bao nguy co chay rung: thu thap NASA F
 
 - `MinIO`: object storage local, bucket mac dinh `wildfire-data`
 - `Spark`: xu ly ETL bang PySpark, doc/ghi MinIO qua `s3a://`
-- `NASA FIRMS`: diem chay lich su Vietnam 2020-2024
-- `Meteostat/Open-Meteo`: weather daily theo grid Vietnam
+- `NASA FIRMS`: diem chay lich su khu vuc bao quanh Vietnam 2020-2024
+- `Meteostat/Open-Meteo`: weather daily theo grid khu vuc bao quanh Vietnam
+- `geo/vietnam_boundary.geojson`: boundary Vietnam de mask lai dung lanh tho Viet Nam trong buoc clean
 
 ## Setup
 
@@ -91,6 +92,7 @@ docker compose exec -T spark-master /opt/spark/bin/spark-submit --master spark:/
 Xu ly:
 
 - Doc `s3a://wildfire-data/firms/` va `s3a://wildfire-data/weather/`
+- Loc diem theo `geo/vietnam_boundary.geojson` de chi giu cac record nam trong Viet Nam
 - Filter FIRMS `confidence >= 30`
 - Convert date columns
 - Drop duplicates
@@ -127,19 +129,19 @@ Output:
 
 ## Ket Qua Hien Tai
 
-Tu lan chay gan nhat:
+Tu lan chay gan nhat sau khi ap boundary mask Vietnam:
 
-- `firms_clean`: 8,044,822 rows
-- `weather_clean`: 3,071,187 rows
-- `features`: 3,071,187 rows, 1,681 grid cells, 20 columns
+- `firms_clean`: 607,106 rows
+- `weather_clean`: 206,451 rows
+- `features`: 206,451 rows, 113 grid cells, 20 columns
 - Date range: `2020-01-01` den `2024-12-31`
 - Data quality: PASS, khong co duplicate `(grid_id, date)`, labels khop voi `fire_count`
 
 Label distribution:
 
-- `risk_level = 0`: 2,549,298 rows
-- `risk_level = 1`: 313,441 rows
-- `risk_level = 2`: 208,448 rows
+- `risk_level = 0`: 145,269 rows
+- `risk_level = 1`: 41,531 rows
+- `risk_level = 2`: 19,651 rows
 
 ## Cau Truc File
 
@@ -150,6 +152,8 @@ Label distribution:
 04_etl_clean.py                  # Spark clean ETL
 05_feature_engineering.py        # Spark spatial join + ML features
 06_data_quality_and_heatmap.py   # DQ report + heatmap
+geo_utils.py                     # GeoJSON point-in-polygon helpers
+geo/vietnam_boundary.geojson     # Vietnam country boundary mask
 docker-compose.yml               # MinIO + Spark local stack
 spark-conf/spark-defaults.conf   # S3A config for Spark
 maps/                            # HTML visualizations
@@ -159,5 +163,6 @@ reports/                         # Data quality reports
 ## Ghi Chu
 
 - Thu muc `data/raw/` duoc gitignore vi chua du lieu cache lon.
+- FIRMS area API chi nhan bounding box, nen raw fetch co the gom nuoc lan can; `04_etl_clean.py` moi la buoc cat ve dung Vietnam boundary.
 - `spark-conf/spark-defaults.conf` khai bao `hadoop-aws` va S3A settings de Spark doc/ghi MinIO on dinh.
 - Neu chay Spark ngoai Docker, endpoint MinIO nen la `http://localhost:9000`; neu chay trong Docker network, endpoint nen la `http://minio:9000`.

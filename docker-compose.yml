@@ -32,6 +32,17 @@ services:
   spark-master:
     image: apache/spark:3.5.6
     container_name: wildfire-spark-master
+    depends_on:
+      minio:
+        condition: service_healthy
+    working_dir: /workspace
+    environment:
+      MINIO_ENDPOINT: http://minio:9000
+      MINIO_ACCESS_KEY: minioadmin
+      MINIO_SECRET_KEY: minioadmin
+      MINIO_BUCKET: wildfire-data
+    volumes:
+      - .:/workspace
     command:
       - /opt/spark/bin/spark-class
       - org.apache.spark.deploy.master.Master
@@ -49,7 +60,18 @@ services:
     image: apache/spark:3.5.6
     container_name: wildfire-spark-worker
     depends_on:
-      - spark-master
+      spark-master:
+        condition: service_started
+      minio:
+        condition: service_healthy
+    working_dir: /workspace
+    environment:
+      MINIO_ENDPOINT: http://minio:9000
+      MINIO_ACCESS_KEY: minioadmin
+      MINIO_SECRET_KEY: minioadmin
+      MINIO_BUCKET: wildfire-data
+    volumes:
+      - .:/workspace
     command:
       - /opt/spark/bin/spark-class
       - org.apache.spark.deploy.worker.Worker

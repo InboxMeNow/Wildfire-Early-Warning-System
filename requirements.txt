@@ -8,9 +8,10 @@ requests
 boto3
 pyarrow
 meteostat
-pyspark
+pyspark==3.5.6
 numpy
 scikit-learn
 streamlit
 streamlit-folium
 plotly
+kafka-python

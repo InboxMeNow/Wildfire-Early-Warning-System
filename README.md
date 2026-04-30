@@ -251,6 +251,93 @@ Label distribution:
 - `risk_level = 1`: 41,531 rows
 - `risk_level = 2`: 19,651 rows
 
+### 12. Kafka Streaming
+
+Start Kafka, Kafka UI, and the topic initializer:
+
+```powershell
+docker compose up -d kafka kafka-init kafka-ui
+```
+
+Kafka runs in KRaft mode on `localhost:9092`. The compose file uses
+`bitnamilegacy/kafka:3.6` because the original `bitnami/kafka:3.6` tag is no
+longer published on Docker Hub. Kafka UI is available at:
+
+```text
+http://localhost:8080
+```
+
+The compose initializer creates these topics automatically:
+
+- `fire-events`
+- `weather-updates`
+- `alerts`
+
+You can also create a topic manually:
+
+```powershell
+docker exec kafka kafka-topics.sh --create --if-not-exists --topic fire-events --bootstrap-server localhost:9092
+```
+
+Install Python dependencies, then publish recent FIRMS detections:
+
+```powershell
+pip install -r requirements.txt
+python src/streaming/firms_producer.py --once
+```
+
+Run continuously every 3 minutes:
+
+```powershell
+python src/streaming/firms_producer.py
+```
+
+Verify messages:
+
+```powershell
+python src/streaming/test_consumer.py --max-messages 10
+```
+
+Note: Kafka UI uses host port `8080`; Spark master UI is mapped to `localhost:8082`.
+
+### 13. Spark Structured Streaming Alerts
+
+Run the Spark streaming processor in the Docker Spark image against Kafka:
+
+```powershell
+docker compose run -d --name wildfire-spark-stream --no-deps spark-master `
+  /opt/spark/bin/spark-submit `
+  --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.6 `
+  src/streaming/spark_streaming_job.py `
+  --bootstrap-servers kafka:29092 `
+  --starting-offsets latest `
+  --checkpoint-location /tmp/spark-checkpoints/fire-hot-zones `
+  --kafka-package none
+```
+
+The job reads `fire-events`, computes 0.5-degree grid cells, applies a 10-minute
+watermark, counts fires in 1-hour windows, and writes hot-zone alerts to
+`alerts` when a cell has more than 5 fires.
+
+For a deterministic smoke test, start the Spark job in one terminal, then publish
+10 synthetic FIRMS-like events into the same grid:
+
+```powershell
+python src/streaming/produce_test_burst.py --count 10
+```
+
+Read the alert topic:
+
+```powershell
+python src/streaming/test_consumer.py --topic alerts --group-id wildfire-alert-check --max-messages 1
+```
+
+For host-local Linux/macOS runs, this also works after `pip install -r requirements.txt`:
+
+```powershell
+python src/streaming/spark_streaming_job.py
+```
+
 ## File Structure
 
 ```text
@@ -267,9 +354,10 @@ Label distribution:
 app.py                           # Streamlit dashboard
 geo_utils.py                     # GeoJSON point-in-polygon helpers
 geo/vietnam_boundary.geojson     # Vietnam country boundary mask
-docker-compose.yml               # Local MinIO + Spark stack
+docker-compose.yml               # Local MinIO + Spark + Kafka stack
 docker/spark/Dockerfile          # Spark image with numpy for MLlib
 spark-conf/spark-defaults.conf   # S3A config for Spark
+src/streaming/                   # Kafka producers, consumers, Spark streaming alerts
 scripts/                         # Operational helper scripts
 maps/                            # HTML visualizations
 reports/                         # Data quality and model reports

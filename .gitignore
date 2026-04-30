@@ -7,3 +7,5 @@ __pycache__/
 .ivy2/
 *.py[cod]
 streamlit.*.log
+spark_streaming.*.log
+checkpoints/

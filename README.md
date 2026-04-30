@@ -31,7 +31,7 @@ Spark UI:
 - Master: `http://localhost:8080`
 - Worker: `http://localhost:8081`
 
-The local Spark image is built from `docker/spark/Dockerfile` and installs `numpy`, which PySpark MLlib needs for model training.
+The local Spark image is built from `docker/spark/Dockerfile` and installs `numpy`, Apache Sedona, and Shapely for MLlib and distributed spatial ETL.
 
 ## Configuration
 
@@ -338,6 +338,53 @@ For host-local Linux/macOS runs, this also works after `pip install -r requireme
 python src/streaming/spark_streaming_job.py
 ```
 
+### 14. Apache Sedona Spatial ETL
+
+The Sedona migration keeps spatial work inside Spark instead of using a
+single-node GeoPandas join. It builds Sedona geometries with
+`ST_Point`, `ST_PolygonFromEnvelope`, `ST_Contains`, and `ST_Intersects`, then
+writes spatially clipped/grid-attached Parquet outputs back to MinIO.
+
+Install local dependencies:
+
+```powershell
+pip install -r requirements.txt
+```
+
+Run the Sedona ETL locally against MinIO:
+
+```powershell
+python src/spatial/sedona_etl.py --print-counts
+```
+
+When running through the Docker Spark image, rebuild it once so the Sedona
+Python package is available in the container:
+
+```powershell
+docker compose build spark-master spark-worker
+```
+
+Output prefixes:
+
+- `s3a://wildfire-data/firms_sedona_clean/`
+- `s3a://wildfire-data/weather_sedona_clean/`
+- `s3a://wildfire-data/grid_sedona/`
+
+Run the 1M-point spatial join benchmark:
+
+```powershell
+python scripts/benchmark_spatial_join.py --rows 1000000
+```
+
+Latest local benchmark report:
+
+- Report: `reports/sedona_spatial_benchmark.md`
+- CSV: `reports/sedona_spatial_benchmark.csv`
+- Sedona: 4.672s for 1,000,000 points on `local[4]`
+- GeoPandas/Shapely 2.x: 0.708s for the same simple rectangular-grid workload
+- Status: Sedona is under 30s, but the 3x speedup criterion is not met on this
+  local synthetic benchmark because Spark startup/execution overhead dominates.
+
 ## File Structure
 
 ```text
@@ -355,12 +402,15 @@ app.py                           # Streamlit dashboard
 geo_utils.py                     # GeoJSON point-in-polygon helpers
 geo/vietnam_boundary.geojson     # Vietnam country boundary mask
 docker-compose.yml               # Local MinIO + Spark + Kafka stack
-docker/spark/Dockerfile          # Spark image with numpy for MLlib
+docker/spark/Dockerfile          # Spark image with numpy, Sedona, and Shapely
 spark-conf/spark-defaults.conf   # S3A config for Spark
+src/spatial/                     # Apache Sedona spatial ETL
 src/streaming/                   # Kafka producers, consumers, Spark streaming alerts
+scripts/benchmark_spatial_join.py # GeoPandas vs Sedona benchmark
 scripts/                         # Operational helper scripts
 maps/                            # HTML visualizations
 reports/                         # Data quality and model reports
+reports/sedona_spatial_benchmark.md # Latest Sedona benchmark report
 ```
 
 ## Notes

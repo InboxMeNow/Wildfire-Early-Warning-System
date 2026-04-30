@@ -51,10 +51,16 @@ def load_env_file(path: Path = Path(".env")) -> None:
 
 def normalize_endpoint(endpoint: str) -> tuple[str, str]:
     if endpoint.startswith("https://"):
-        return endpoint.removeprefix("https://"), "https"
+        return endpoint[len("https://") :], "https"
     if endpoint.startswith("http://"):
-        return endpoint.removeprefix("http://"), "http"
+        return endpoint[len("http://") :], "http"
     return endpoint, "http"
+
+
+def prepare_output_path(path: Path) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    if path.exists():
+        path.unlink()
 
 
 def s3_filesystem(args: argparse.Namespace) -> pafs.S3FileSystem:
@@ -178,7 +184,9 @@ def main() -> int:
     scored, anomalies, metadata = detect_anomalies(frame, args.z_threshold)
     geojson = anomalies_to_geojson(anomalies, metadata)
 
-    args.geojson_output.parent.mkdir(parents=True, exist_ok=True)
+    prepare_output_path(args.geojson_output)
+    prepare_output_path(args.metadata_output)
+    prepare_output_path(args.stats_output)
     args.geojson_output.write_text(json.dumps(geojson, indent=2) + "\n", encoding="utf-8")
     args.metadata_output.write_text(json.dumps(metadata, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     scored.to_csv(args.stats_output, index=False)

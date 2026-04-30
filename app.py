@@ -92,9 +92,9 @@ def load_env_file(path: Path = Path(".env")) -> None:
 
 def normalize_endpoint(endpoint: str) -> tuple[str, str]:
     if endpoint.startswith("https://"):
-        return endpoint.removeprefix("https://"), "https"
+        return endpoint[len("https://") :], "https"
     if endpoint.startswith("http://"):
-        return endpoint.removeprefix("http://"), "http"
+        return endpoint[len("http://") :], "http"
     return endpoint, "http"
 
 

@@ -28,8 +28,8 @@ MinIO:
 
 Spark UI:
 
-- Master: `http://localhost:8080`
-- Worker: `http://localhost:8081`
+- Master: `http://localhost:8082`
+- Worker: `http://localhost:8083`
 
 The local Spark image is built from `docker/spark/Dockerfile` and installs `numpy`, Apache Sedona, and Shapely for MLlib and distributed spatial ETL.
 
@@ -338,7 +338,55 @@ For host-local Linux/macOS runs, this also works after `pip install -r requireme
 python src/streaming/spark_streaming_job.py
 ```
 
-### 14. Apache Sedona Spatial ETL
+### 14. Airflow Orchestration
+
+Airflow runs the scheduled pipeline DAGs with the web UI on:
+
+```text
+http://localhost:8081
+```
+
+Default local login:
+
+```text
+admin / admin
+```
+
+Start Airflow with the backing services:
+
+```powershell
+docker compose up -d minio create-bucket spark-master spark-worker kafka kafka-init airflow
+```
+
+The compose service builds `docker/airflow/Dockerfile` from
+`apache/airflow:2.8.0` with Java for `spark-submit`, then installs PySpark, the
+Spark provider, and runtime Python dependencies at container startup. It mounts
+`./dags`, `./src`, and the project root, and configures `spark_default` to
+submit jobs to `spark://spark-master:7077`.
+
+Available DAGs:
+
+- `fire_ingestion_dag`: every 3 hours, fetches recent FIRMS detections, publishes
+  to Kafka `fire-events`, and archives the same batch to MinIO.
+- `weather_update_dag`: daily, fetches weather for the execution date, then runs
+  Spark cleaning and feature refresh.
+- `model_retrain_dag`: weekly, runs Spark cleaning, feature engineering, model
+  training, data quality/heatmap, DBSCAN clustering, anomaly detection, and
+  next-day inference.
+
+Useful checks:
+
+```powershell
+docker compose exec airflow airflow dags list
+docker compose exec airflow airflow dags trigger fire_ingestion_dag
+docker compose exec airflow airflow dags trigger weather_update_dag
+docker compose exec airflow airflow dags trigger model_retrain_dag
+```
+
+`fire_ingestion_dag` needs `FIRMS_MAP_KEY` or `MAP_KEY` in the host environment
+or `.env` before the Airflow container starts.
+
+### 15. Apache Sedona Spatial ETL
 
 The Sedona migration keeps spatial work inside Spark instead of using a
 single-node GeoPandas join. It builds Sedona geometries with
@@ -402,8 +450,11 @@ app.py                           # Streamlit dashboard
 geo_utils.py                     # GeoJSON point-in-polygon helpers
 geo/vietnam_boundary.geojson     # Vietnam country boundary mask
 docker-compose.yml               # Local MinIO + Spark + Kafka stack
+docker/airflow/Dockerfile        # Airflow 2.8 image with Java for spark-submit
 docker/spark/Dockerfile          # Spark image with numpy, Sedona, and Shapely
 spark-conf/spark-defaults.conf   # S3A config for Spark
+dags/                            # Airflow DAGs for ingestion, weather, retraining
+src/orchestration/               # Airflow Python task helpers
 src/spatial/                     # Apache Sedona spatial ETL
 src/streaming/                   # Kafka producers, consumers, Spark streaming alerts
 scripts/benchmark_spatial_join.py # GeoPandas vs Sedona benchmark

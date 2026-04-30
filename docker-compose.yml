@@ -91,7 +91,7 @@ services:
       - --webui-port
       - "8081"
     ports:
-      - "8081:8081"
+      - "8083:8081"
 
   kafka:
     image: bitnamilegacy/kafka:3.6
@@ -150,6 +150,75 @@ services:
       KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:29092
       DYNAMIC_CONFIG_ENABLED: "true"
 
+  airflow:
+    build:
+      context: .
+      dockerfile: docker/airflow/Dockerfile
+    image: wildfire-airflow:2.8.0
+    container_name: wildfire-airflow
+    depends_on:
+      minio:
+        condition: service_healthy
+      create-bucket:
+        condition: service_completed_successfully
+      spark-master:
+        condition: service_started
+      kafka:
+        condition: service_healthy
+      kafka-init:
+        condition: service_completed_successfully
+    ports:
+      - "8081:8080"
+    environment:
+      AIRFLOW__CORE__EXECUTOR: SequentialExecutor
+      AIRFLOW__CORE__LOAD_EXAMPLES: "false"
+      AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: "false"
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: sqlite:////opt/airflow/airflow.db
+      AIRFLOW_CONN_SPARK_DEFAULT: '{"conn_type":"spark","host":"spark://spark-master","port":7077}'
+      AIRFLOW_PROJECT_DIR: /opt/airflow/project
+      AIRFLOW_PROJECT_PYTHON: python
+      JAVA_HOME: /usr/lib/jvm/java-17-openjdk-amd64
+      KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+      MINIO_ENDPOINT: http://minio:9000
+      MINIO_ACCESS_KEY: minioadmin
+      MINIO_SECRET_KEY: minioadmin
+      MINIO_BUCKET: wildfire-data
+      FIRMS_MAP_KEY: ${FIRMS_MAP_KEY:-}
+      MAP_KEY: ${MAP_KEY:-}
+      _PIP_ADDITIONAL_REQUIREMENTS: >-
+        apache-airflow-providers-apache-spark==4.7.1
+        pyspark==3.5.6
+        kafka-python
+        boto3
+        requests
+        pandas
+        pyarrow
+        meteostat
+        numpy
+        scikit-learn
+        folium
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./src:/opt/airflow/src
+      - .:/opt/airflow/project
+      - airflow-logs:/opt/airflow/logs
+    command:
+      - bash
+      - -c
+      - |
+        airflow db init || true
+        airflow db migrate || true
+        airflow users create \
+          --username admin \
+          --firstname Wildfire \
+          --lastname Admin \
+          --role Admin \
+          --email admin@example.com \
+          --password admin || true &&
+        airflow scheduler &
+        exec airflow webserver
+
 volumes:
   minio-data:
   kafka-data:
+  airflow-logs:

@@ -175,8 +175,14 @@ def extract_stage_model(model, model_type):
     raise RuntimeError(f"PipelineModel does not contain {model_type.__name__}")
 
 
-def write_feature_importance(path: Path, feature_columns: list[str], importances: list[float]) -> None:
+def prepare_output_path(path: Path) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
+    if path.exists():
+        path.unlink()
+
+
+def write_feature_importance(path: Path, feature_columns: list[str], importances: list[float]) -> None:
+    prepare_output_path(path)
     rows = sorted(zip(feature_columns, importances), key=lambda item: item[1], reverse=True)
     with path.open("w", encoding="utf-8") as file:
         file.write("feature,importance\n")
@@ -185,7 +191,7 @@ def write_feature_importance(path: Path, feature_columns: list[str], importances
 
 
 def write_metrics(path: Path, metrics: dict[str, object]) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
+    prepare_output_path(path)
     path.write_text(json.dumps(metrics, indent=2, sort_keys=True) + "\n", encoding="utf-8")
 
 

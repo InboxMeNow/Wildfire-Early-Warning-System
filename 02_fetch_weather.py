@@ -34,7 +34,17 @@ import pyarrow as pa
 import pyarrow.parquet as pq
 from botocore.client import Config
 from botocore.exceptions import ClientError
-from meteostat import config, hourly, stations
+try:
+    from meteostat import config, hourly, stations
+
+    METEOSTAT_LEGACY_API = True
+except ImportError:
+    from meteostat import Hourly, Stations
+
+    METEOSTAT_LEGACY_API = False
+
+    class config:  # noqa: N801
+        block_large_requests = False
 
 
 config.block_large_requests = False
@@ -146,11 +156,15 @@ def haversine_km(
 
 
 def load_weather_stations(country: str) -> pd.DataFrame:
-    station_frame = stations.query(
-        "select id, country, region, latitude, longitude, elevation, timezone "
-        "from stations where country = ?",
-        params=(country,),
-    )
+    if METEOSTAT_LEGACY_API:
+        station_frame = stations.query(
+            "select id, country, region, latitude, longitude, elevation, timezone "
+            "from stations where country = ?",
+            params=(country,),
+        )
+    else:
+        station_frame = Stations().region(country).fetch().reset_index()
+
     if station_frame.empty:
         raise RuntimeError(f"Meteostat returned no stations for country={country!r}")
     return station_frame.reset_index(drop=True)
@@ -213,7 +227,10 @@ def fetch_station_daily(
         for year in range(start.year, end.year + 1):
             chunk_start = max(start, datetime(year, 1, 1))
             chunk_end = min(end, datetime(year, 12, 31, 23, 59, 59, 999999))
-            chunk_frame = hourly(station_id, chunk_start, chunk_end, timezone=timezone).fetch()
+            if METEOSTAT_LEGACY_API:
+                chunk_frame = hourly(station_id, chunk_start, chunk_end, timezone=timezone).fetch()
+            else:
+                chunk_frame = Hourly(station_id, chunk_start, chunk_end, timezone=timezone).fetch()
             if chunk_frame is not None and not chunk_frame.empty:
                 hourly_frames.append(chunk_frame)
         hourly_frame = (
@@ -222,7 +239,10 @@ def fetch_station_daily(
             else None
         )
     else:
-        hourly_frame = hourly(station_id, start, end, timezone=timezone).fetch()
+        if METEOSTAT_LEGACY_API:
+            hourly_frame = hourly(station_id, start, end, timezone=timezone).fetch()
+        else:
+            hourly_frame = Hourly(station_id, start, end, timezone=timezone).fetch()
 
     if hourly_frame is None or hourly_frame.empty:
         return all_dates.assign(

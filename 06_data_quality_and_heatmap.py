@@ -57,10 +57,16 @@ def load_env_file(path: Path = Path(".env")) -> None:
 
 def normalize_endpoint(endpoint: str) -> tuple[str, str]:
     if endpoint.startswith("https://"):
-        return endpoint.removeprefix("https://"), "https"
+        return endpoint[len("https://") :], "https"
     if endpoint.startswith("http://"):
-        return endpoint.removeprefix("http://"), "http"
+        return endpoint[len("http://") :], "http"
     return endpoint, "http"
+
+
+def prepare_output_path(path: Path) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    if path.exists():
+        path.unlink()
 
 
 def build_s3_filesystem(args: argparse.Namespace) -> pafs.S3FileSystem:
@@ -253,7 +259,7 @@ def build_heatmap(
         ).add_to(fire_map)
 
     folium.LayerControl().add_to(fire_map)
-    output_path.parent.mkdir(parents=True, exist_ok=True)
+    prepare_output_path(output_path)
     fire_map.save(output_path)
 
     return heat
@@ -331,7 +337,7 @@ def write_report(
     else:
         lines.append("- No blocking data quality issues found in week-1 outputs.")
 
-    output_path.parent.mkdir(parents=True, exist_ok=True)
+    prepare_output_path(output_path)
     output_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 

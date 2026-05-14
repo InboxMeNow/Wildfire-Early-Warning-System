@@ -9,13 +9,14 @@
   "grid_count": 113,
   "high_threshold": 0.75,
   "medium_threshold": 0.5,
-  "model_input": "s3a://wildfire-data/models/gbt/",
+  "model_input": "models:/wildfire-gbt/Production",
   "model_name": "gbt",
+  "model_source": "mlflow_registry",
   "open_meteo_url": "https://api.open-meteo.com/v1/forecast",
   "risk_level_counts": {
-    "0": 45,
-    "1": 38,
-    "2": 30
+    "0": 37,
+    "1": 39,
+    "2": 37
   },
   "status": "ok",
   "target_date": "2026-05-15"

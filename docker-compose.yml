@@ -38,11 +38,13 @@ services:
       --port 5000
       --backend-store-uri sqlite:////mlflow/mlflow.db
       --serve-artifacts
-      --artifacts-destination /mlflow/artifacts
+      --artifacts-destination file:///workspace/mlflow/artifacts
+      --default-artifact-root mlflow-artifacts:/
     ports:
       - "5000:5000"
     volumes:
-      - ./mlflow:/mlflow
+      - mlflow-db:/mlflow
+      - ./mlflow/artifacts:/workspace/mlflow/artifacts
     healthcheck:
       test:
         [
@@ -244,6 +246,7 @@ services:
       - ./dags:/opt/airflow/dags
       - ./src:/opt/airflow/src
       - .:/opt/airflow/project
+      - ./mlflow/artifacts:/workspace/mlflow/artifacts
       - airflow-logs:/opt/airflow/logs
     command:
       - bash
@@ -263,5 +266,6 @@ services:
 
 volumes:
   minio-data:
+  mlflow-db:
   kafka-data:
   airflow-logs:

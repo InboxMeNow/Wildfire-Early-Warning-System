@@ -685,7 +685,7 @@ def mlflow_metrics_with_aliases(metrics: dict[str, Any]) -> dict[str, Any]:
 
 def find_registered_version(mlflow_module, registered_model_name: str, run_id: str) -> str | None:
     client = mlflow_module.tracking.MlflowClient()
-    versions = client.search_model_versions(f"name = '{registered_model_name}'")
+    versions = client.search_model_versions(f"name='{registered_model_name}'")
     matching = [version for version in versions if getattr(version, "run_id", None) == run_id]
     if not matching:
         return None
@@ -707,6 +707,36 @@ def promote_model_version(mlflow_module, registered_model_name: str, version: st
     except Exception:
         pass
 
+
+def tag_registered_model_source(
+    mlflow_module,
+    registered_model_name: str,
+    version: str,
+    spark_pipeline_uri: str | None,
+) -> None:
+    if not spark_pipeline_uri:
+        return
+
+    client = mlflow_module.tracking.MlflowClient()
+    client.set_model_version_tag(registered_model_name, version, "spark_pipeline_uri", spark_pipeline_uri)
+
+def register_spark_pipeline_model(
+    mlflow_module,
+    registered_model_name: str,
+    run_id: str,
+    spark_pipeline_uri: str,
+) -> str:
+    client = mlflow_module.tracking.MlflowClient()
+    try:
+        client.create_registered_model(registered_model_name)
+    except Exception:
+        pass
+    version = client.create_model_version(
+        name=registered_model_name,
+        source=spark_pipeline_uri.rstrip("/") + "/",
+        run_id=run_id,
+    )
+    return str(version.version)
 
 def log_cv_candidate_runs(
     mlflow_module,
@@ -757,7 +787,9 @@ def log_mlflow_run(
         tags = params.pop("_tags", None)
         registered_model_name = params.pop("_registered_model_name", None)
         model = params.pop("_model", None)
+        dfs_tmpdir = params.pop("_dfs_tmpdir", None)
         promote_to_production = bool(params.pop("_promote_to_production", False))
+        spark_pipeline_uri = params.get("model_output")
         if isinstance(tags, dict):
             mlflow_module.set_tags(tags)
         for key, value in params.items():
@@ -773,28 +805,58 @@ def log_mlflow_run(
         model_info = None
         registered_version = None
         if model is not None and registered_model_name:
-            model_info = mlflow_module.spark.log_model(
-                spark_model=model,
-                artifact_path="model",
-                registered_model_name=registered_model_name,
-            )
-            registered_version = getattr(model_info, "registered_model_version", None)
-            if registered_version is None:
-                registered_version = find_registered_version(mlflow_module, registered_model_name, run_id)
-            if registered_version and promote_to_production:
-                promote_model_version(mlflow_module, registered_model_name, str(registered_version))
+            try:
+                model_info = mlflow_module.spark.log_model(
+                    spark_model=model,
+                    artifact_path="model",
+                    registered_model_name=registered_model_name,
+                    dfs_tmpdir=dfs_tmpdir,
+                )
+                registered_version = getattr(model_info, "registered_model_version", None)
+                if registered_version is None:
+                    registered_version = find_registered_version(mlflow_module, registered_model_name, run_id)
+            except Exception as exc:
+                if not isinstance(spark_pipeline_uri, str) or not spark_pipeline_uri:
+                    raise
+                print(
+                    "mlflow.spark.log_model failed; registering existing Spark PipelineModel "
+                    f"from {spark_pipeline_uri} instead. Original error: {exc}"
+                )
+                registered_version = register_spark_pipeline_model(
+                    mlflow_module,
+                    registered_model_name,
+                    run_id,
+                    spark_pipeline_uri,
+                )
+            if registered_version:
+                tag_registered_model_source(
+                    mlflow_module,
+                    registered_model_name,
+                    str(registered_version),
+                    spark_pipeline_uri if isinstance(spark_pipeline_uri, str) else None,
+                )
+                if promote_to_production:
+                    promote_model_version(mlflow_module, registered_model_name, str(registered_version))
 
     result = {"mlflow_run_id": run_id}
     if registered_model_name:
         result["registered_model_name"] = registered_model_name
-        result["registered_model_uri"] = f"models:/{registered_model_name}/Production"
     if registered_version:
         result["registered_model_version"] = str(registered_version)
+        result["registered_model_uri"] = f"models:/{registered_model_name}/{registered_version}"
         if promote_to_production:
             result["registered_model_stage"] = "Production"
+            result["production_model_uri"] = f"models:/{registered_model_name}/Production"
     if model_info is not None:
         result["mlflow_model_uri"] = f"runs:/{run_id}/model"
     return result
+
+
+def log_artifact_to_mlflow_run(mlflow_module, run_id: str | None, artifact_path: Path) -> None:
+    if mlflow_module is None or not run_id or not artifact_path.exists():
+        return
+    with mlflow_module.start_run(run_id=run_id):
+        mlflow_module.log_artifact(str(artifact_path))
 
 
 def comparison_row(metrics: dict[str, Any]) -> dict[str, Any]:
@@ -923,6 +985,7 @@ def main() -> int:
     rf_tuned_output = s3a_path(args.minio_bucket, args.rf_tuned_model_output_prefix)
     gbt_output = s3a_path(args.minio_bucket, args.gbt_model_output_prefix)
     checkpoint_output = s3a_path(args.minio_bucket, args.checkpoint_prefix)
+    mlflow_dfs_tmp = s3a_path(args.minio_bucket, f"{args.checkpoint_prefix.strip('/')}/mlflow_tmp")
 
     spark = build_spark(args)
     spark.sparkContext.setLogLevel(args.spark_log_level)
@@ -1158,6 +1221,7 @@ def main() -> int:
                 "feature_columns": DEFAULT_FEATURE_COLUMNS,
                 "_tags": {"run_role": "final_model", "model_family": "rf_tuned"},
                 "_model": rf_tuned_model,
+                "_dfs_tmpdir": mlflow_dfs_tmp,
                 "_registered_model_name": None if args.skip_model_registry else args.rf_tuned_registered_model_name,
                 "_promote_to_production": best_row["model"] == "rf_tuned",
                 **rf_tuned_metrics["params"],
@@ -1167,6 +1231,7 @@ def main() -> int:
         )
         if rf_registry_info:
             model_metrics["rf_tuned"].update(rf_registry_info)
+        gbt_registry_info: dict[str, Any] = {}
         if gbt_metrics is not None:
             gbt_registry_info = log_mlflow_run(
                 mlflow_module,
@@ -1177,6 +1242,7 @@ def main() -> int:
                     "feature_columns": DEFAULT_FEATURE_COLUMNS,
                     "_tags": {"run_role": "final_model", "model_family": "gbt"},
                     "_model": gbt_model,
+                    "_dfs_tmpdir": mlflow_dfs_tmp,
                     "_registered_model_name": None if args.skip_model_registry else args.gbt_registered_model_name,
                     "_promote_to_production": best_row["model"] == "gbt",
                     **gbt_metrics["params"],
@@ -1188,6 +1254,13 @@ def main() -> int:
                 model_metrics["gbt"].update(gbt_registry_info)
 
         write_metrics(args.metrics_output, model_metrics)
+        for registry_info in (rf_registry_info, gbt_registry_info):
+            run_id = registry_info.get("mlflow_run_id") if registry_info else None
+            log_artifact_to_mlflow_run(
+                mlflow_module,
+                run_id if isinstance(run_id, str) else None,
+                args.metrics_output,
+            )
 
         print("Model comparison:")
         for row in comparison_rows:

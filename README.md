@@ -6,6 +6,7 @@ Data and ML pipeline for a wildfire risk early-warning project in Vietnam. The p
 
 - `MinIO`: local object storage. The default bucket is `wildfire-data`.
 - `Spark`: PySpark ETL, feature engineering, and ML jobs that read/write MinIO through `s3a://`.
+- `MLflow`: experiment tracking and model registry for Spark MLlib models.
 - `NASA FIRMS`: historical active fire detections for the area around Vietnam, 2020-2024.
 - `Meteostat/Open-Meteo`: daily weather data on a grid around Vietnam.
 - `NASA AppEEARS MOD13Q1.061`: 250m, 16-day MODIS NDVI composites aggregated to grid cells.
@@ -32,7 +33,13 @@ Spark UI:
 - Master: `http://localhost:8082`
 - Worker: `http://localhost:8083`
 
-The local Spark image is built from `docker/spark/Dockerfile` and installs `numpy`, Apache Sedona, and Shapely for MLlib and distributed spatial ETL.
+MLflow UI:
+
+- Tracking and Registry: `http://localhost:5000`
+- Experiment: `wildfire-prediction`
+- Registered models: `wildfire-rf-tuned`, `wildfire-gbt`
+
+The local Spark image is built from `docker/spark/Dockerfile` and installs `numpy`, MLflow, Apache Sedona, and Shapely for MLlib and distributed spatial ETL.
 
 ## Configuration
 
@@ -191,7 +198,21 @@ Processing steps:
 - Optimize decision thresholds on validation F1 and evaluate the chosen threshold on test data.
 - Select the served best model by validation AUC-ROC; keep the 2024 test split for final reporting.
 - Save models to `s3a://wildfire-data/models/rf_baseline/`, `s3a://wildfire-data/models/rf_tuned/`, and `s3a://wildfire-data/models/gbt/`.
+- Log RF baseline, RF/GBT CV candidates, RF tuned, and GBT runs to MLflow.
+- Register `wildfire-rf-tuned` and `wildfire-gbt`; promote the best model to `Production`.
 - Save comparison, feature importance, calibration, threshold, and MLflow artifacts to `reports/`.
+
+Verify tracking and registry state:
+
+```powershell
+docker compose exec -T spark-master python3 /workspace/scripts/verify_mlflow_registry.py --mlflow-tracking-uri http://mlflow:5000
+```
+
+If registry versions need to be refreshed from the trained Spark models in MinIO:
+
+```powershell
+docker compose exec -T spark-master /opt/spark/bin/spark-submit --master spark://spark-master:7077 /workspace/scripts/refresh_mlflow_registry.py
+```
 
 ### 9. Recent Fire Clustering
 
@@ -233,7 +254,7 @@ Processing steps:
 - Read Vietnam grid cells from `s3a://wildfire-data/features/`.
 - Fetch Open-Meteo forecast data for the target day, which defaults to tomorrow in `Asia/Ho_Chi_Minh`.
 - Rebuild the same model features used during training, including time features, 7-day precipitation, dry-day streak, and latest non-null historical `mean_ndvi_30days` per grid.
-- Load the best advanced Spark ML pipeline from `reports/model_metrics_week1.json` by default.
+- Load the Production model from MLflow Registry by default, currently `models:/wildfire-gbt/Production`.
 - Predict fire occurrence probability for each grid cell.
 - Convert probability to `risk_level`: low (`0`), medium (`1`), high (`2`).
 - Save GeoJSON and metadata under `reports/`.
@@ -280,10 +301,13 @@ Latest run after applying the Vietnam boundary mask:
 - RF tuned AUC uplift over RF baseline: 0.0390, target met
 - GBT AUC delta versus RF tuned: +0.0092, target met
 - Best current Spark risk model by validation AUC-ROC: `gbt`
+- MLflow experiment `wildfire-prediction`: 15 runs
+- Registered MLflow models: `wildfire-rf-tuned` version 3, `wildfire-gbt` version 3
+- Production model: `models:/wildfire-gbt/Production`
 - Latest DBSCAN run: 86 fire points in the latest 24-hour window, 8 clusters
 - Latest anomaly run: 2 anomalous grids on `2024-12-31`
 - Latest inference run: 113 grid cells predicted for `2026-05-15`
-- Latest inference risk levels: 45 low, 38 medium, 30 high
+- Latest inference risk levels: 37 low, 39 medium, 37 high
 
 Label distribution:
 

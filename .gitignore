@@ -8,4 +8,6 @@ __pycache__/
 *.py[cod]
 streamlit.*.log
 spark_streaming.*.log
+reports/*.log
 checkpoints/
+mlflow/

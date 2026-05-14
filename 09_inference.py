@@ -174,6 +174,9 @@ def resolve_model_input(args: argparse.Namespace, metrics: dict[str, object]) ->
         if isinstance(best_model, str):
             model_metrics = metrics.get(best_model, {})
             if isinstance(model_metrics, dict):
+                production_model_uri = model_metrics.get("production_model_uri")
+                if isinstance(production_model_uri, str) and production_model_uri:
+                    return model_uri(args, production_model_uri)
                 registered_model_uri = model_metrics.get("registered_model_uri")
                 if isinstance(registered_model_uri, str) and registered_model_uri:
                     return model_uri(args, registered_model_uri)
@@ -211,6 +214,7 @@ def apply_threshold_defaults(args: argparse.Namespace, metrics: dict[str, object
     if args.high_threshold is None:
         args.high_threshold = max(0.75, min(0.95, float(args.medium_threshold) + 0.15))
 
+
 def load_prediction_model(model_input: str, args: argparse.Namespace):
     if model_input.startswith(("models:/", "runs:/")):
         try:
@@ -221,9 +225,67 @@ def load_prediction_model(model_input: str, args: argparse.Namespace):
 
         mlflow.set_tracking_uri(args.mlflow_tracking_uri)
         mlflow.set_registry_uri(args.mlflow_registry_uri or args.mlflow_tracking_uri)
-        return mlflow.spark.load_model(model_input)
+        try:
+            return mlflow.spark.load_model(model_input)
+        except Exception as exc:
+            if not model_input.startswith("models:/"):
+                raise
+            sparkml_path = resolve_registry_sparkml_path(mlflow, model_input)
+            print(
+                "mlflow.spark.load_model failed for registry URI; "
+                f"loading Spark ML pipeline from registered source instead: {sparkml_path}. "
+                f"Original error: {exc}"
+            )
+            return PipelineModel.load(sparkml_path)
 
     return PipelineModel.load(model_input)
+
+
+def resolve_registry_sparkml_path(mlflow_module, model_input: str) -> str:
+    client = mlflow_module.tracking.MlflowClient()
+    name, selector = parse_models_uri(model_input)
+    if selector.isdigit():
+        version = client.get_model_version(name, selector)
+    else:
+        versions = client.get_latest_versions(name, [selector])
+        if not versions:
+            raise RuntimeError(f"No MLflow model version found for {model_input}")
+        version = versions[0]
+
+    tags = getattr(version, "tags", {}) or {}
+    spark_pipeline_uri = tags.get("spark_pipeline_uri")
+    if isinstance(spark_pipeline_uri, str) and spark_pipeline_uri:
+        return spark_pipeline_uri.rstrip("/") + "/"
+
+    source = version.source.rstrip("/")
+    parsed = urllib.parse.urlparse(source)
+    if parsed.scheme == "file":
+        source_path = Path(urllib.parse.unquote(parsed.path))
+        sparkml_path = source_path / "sparkml"
+        if spark_metadata_has_data(sparkml_path):
+            return str(sparkml_path)
+        if spark_metadata_has_data(source_path):
+            return str(source_path)
+        return str(sparkml_path)
+    if source.endswith("/model"):
+        return source + "/sparkml"
+    return source.rstrip("/") + "/"
+
+
+def parse_models_uri(model_input: str) -> tuple[str, str]:
+    if not model_input.startswith("models:/"):
+        raise ValueError(f"Invalid MLflow models URI: {model_input}")
+    suffix = model_input[len("models:/"):].strip("/")
+    parts = suffix.split("/")
+    if len(parts) < 2:
+        raise ValueError(f"Invalid MLflow models URI: {model_input}")
+    return "/".join(parts[:-1]), parts[-1]
+
+def spark_metadata_has_data(path: Path) -> bool:
+    metadata_path = path / "metadata"
+    if not metadata_path.exists():
+        return False
+    return any(child.name.startswith("part-") for child in metadata_path.iterdir())
 
 
 def default_target_date(timezone: str) -> str:

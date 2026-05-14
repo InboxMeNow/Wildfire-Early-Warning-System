@@ -4,7 +4,7 @@ Run next-day wildfire risk inference from Open-Meteo forecast data.
 
 Input:
     s3a://wildfire-data/features/
-    s3a://wildfire-data/models/random_forest_fire_baseline/
+    MLflow registry Production model by default
 
 Output:
     reports/fire_risk_forecast_latest.geojson
@@ -47,6 +47,10 @@ DEFAULT_MINIO_SECRET_KEY = "minioadmin"
 DEFAULT_MINIO_BUCKET = "wildfire-data"
 DEFAULT_HADOOP_AWS_PACKAGE = "org.apache.hadoop:hadoop-aws:3.3.4"
 DEFAULT_OPEN_METEO_URL = "https://api.open-meteo.com/v1/forecast"
+REGISTERED_MODEL_NAMES = {
+    "rf_tuned": "wildfire-rf-tuned",
+    "gbt": "wildfire-gbt",
+}
 DEFAULT_FEATURE_COLUMNS = [
     "grid_lat_index",
     "grid_lon_index",
@@ -58,12 +62,40 @@ DEFAULT_FEATURE_COLUMNS = [
     "precipitation_sum",
     "precipitation_sum_7days",
     "dry_days_count",
+    "mean_ndvi_30days",
     "station_distance_km",
     "weather_points_count",
     "month_sin",
     "month_cos",
     "dayofyear_sin",
     "dayofyear_cos",
+    "precip_lag_1",
+    "precip_lag_3",
+    "precip_lag_7",
+    "temp_lag_1",
+    "temp_lag_3",
+    "temp_lag_7",
+    "humidity_lag_1",
+    "wind_lag_1",
+    "ndvi_lag_1",
+    "temp_7d_avg",
+    "temp_7d_std",
+    "temp_30d_avg",
+    "temp_30d_std",
+    "humidity_7d_avg",
+    "humidity_30d_avg",
+    "wind_7d_avg",
+    "precip_14d_sum",
+    "precip_30d_sum",
+    "dry_days_14d",
+    "dry_days_30d",
+    "ndvi_30d_avg",
+    "ndvi_30d_min",
+    "heat_dryness_index",
+    "wind_dryness_index",
+    "vegetation_dryness_index",
+    "lat_band",
+    "lon_band",
 ]
 DAILY_VARIABLES = [
     "temperature_2m_max",
@@ -91,6 +123,107 @@ def load_env_file(path: Path = Path(".env")) -> None:
 
 def s3a_path(bucket: str, prefix: str) -> str:
     return f"s3a://{bucket}/{prefix.strip('/')}/"
+
+
+def load_json_if_exists(path: Path) -> dict[str, object]:
+    if not path.exists():
+        return {}
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+def model_uri(args: argparse.Namespace, prefix_or_uri: str) -> str:
+    if prefix_or_uri.startswith(("models:/", "runs:/")):
+        return prefix_or_uri
+    if prefix_or_uri.startswith("s3a://"):
+        return prefix_or_uri.rstrip("/") + "/"
+    return s3a_path(args.minio_bucket, prefix_or_uri)
+
+def infer_model_name(args: argparse.Namespace, metrics: dict[str, object], model_input: str) -> str | None:
+    if "wildfire-gbt" in model_input:
+        return "gbt"
+    if "wildfire-rf-tuned" in model_input:
+        return "rf_tuned"
+
+    normalized_input = model_input.rstrip("/")
+    for model_name in ("rf_baseline", "rf_tuned", "gbt"):
+        model_metrics = metrics.get(model_name, {})
+        if not isinstance(model_metrics, dict):
+            continue
+        model_output = model_metrics.get("model_output")
+        if isinstance(model_output, str) and model_uri(args, model_output).rstrip("/") == normalized_input:
+            return model_name
+
+    if args.model_prefix:
+        token = args.model_prefix.strip("/").split("/")[-1]
+        if token in metrics:
+            return token
+
+    best_model = metrics.get("best_model")
+    return best_model if isinstance(best_model, str) else None
+
+
+def resolve_model_input(args: argparse.Namespace, metrics: dict[str, object]) -> str:
+    if args.model_prefix:
+        return model_uri(args, args.model_prefix)
+
+    if not args.disable_mlflow_registry:
+        if args.registry_model_uri:
+            return model_uri(args, args.registry_model_uri)
+
+        best_model = metrics.get("best_model")
+        if isinstance(best_model, str):
+            model_metrics = metrics.get(best_model, {})
+            if isinstance(model_metrics, dict):
+                registered_model_uri = model_metrics.get("registered_model_uri")
+                if isinstance(registered_model_uri, str) and registered_model_uri:
+                    return model_uri(args, registered_model_uri)
+                registered_model_name = model_metrics.get("registered_model_name")
+                if isinstance(registered_model_name, str) and registered_model_name:
+                    return f"models:/{registered_model_name}/Production"
+
+        return f"models:/{REGISTERED_MODEL_NAMES['gbt']}/Production"
+
+    best_model = metrics.get("best_model")
+    if isinstance(best_model, str):
+        model_metrics = metrics.get(best_model, {})
+        if isinstance(model_metrics, dict):
+            model_output = model_metrics.get("model_output")
+            if isinstance(model_output, str) and model_output:
+                return model_uri(args, model_output)
+
+    return model_uri(args, "models/gbt")
+
+
+def apply_threshold_defaults(args: argparse.Namespace, metrics: dict[str, object], model_name: str | None) -> None:
+    if args.medium_threshold is not None and args.high_threshold is not None:
+        return
+
+    optimal_threshold = None
+    if isinstance(model_name, str):
+        model_metrics = metrics.get(model_name, {})
+        if isinstance(model_metrics, dict):
+            value = model_metrics.get("optimal_threshold")
+            if isinstance(value, (int, float)):
+                optimal_threshold = float(value)
+
+    if args.medium_threshold is None:
+        args.medium_threshold = optimal_threshold if optimal_threshold is not None else 0.33
+    if args.high_threshold is None:
+        args.high_threshold = max(0.75, min(0.95, float(args.medium_threshold) + 0.15))
+
+def load_prediction_model(model_input: str, args: argparse.Namespace):
+    if model_input.startswith(("models:/", "runs:/")):
+        try:
+            import mlflow
+            import mlflow.spark
+        except ImportError as exc:
+            raise RuntimeError("MLflow is required to load registry model URIs.") from exc
+
+        mlflow.set_tracking_uri(args.mlflow_tracking_uri)
+        mlflow.set_registry_uri(args.mlflow_registry_uri or args.mlflow_tracking_uri)
+        return mlflow.spark.load_model(model_input)
+
+    return PipelineModel.load(model_input)
 
 
 def default_target_date(timezone: str) -> str:
@@ -130,6 +263,21 @@ def build_spark(args: argparse.Namespace) -> SparkSession:
 
 
 def load_grid(features: DataFrame) -> list[dict[str, object]]:
+    ndvi_latest = None
+    if "mean_ndvi_30days" in features.columns:
+        latest_window = Window.partitionBy("grid_id").orderBy(F.col("date").desc())
+        ndvi_latest = (
+            features.select("grid_id", "date", "mean_ndvi_30days")
+            .filter(F.col("mean_ndvi_30days").isNotNull())
+            .withColumn("_row_number", F.row_number().over(latest_window))
+            .filter(F.col("_row_number") == F.lit(1))
+            .select(
+                "grid_id",
+                F.col("mean_ndvi_30days").cast("double").alias("mean_ndvi_30days"),
+                F.col("date").alias("ndvi_source_date"),
+            )
+        )
+
     stats = (
         features.groupBy("grid_id", "grid_lat_index", "grid_lon_index", "grid_lat", "grid_lon")
         .agg(
@@ -138,6 +286,10 @@ def load_grid(features: DataFrame) -> list[dict[str, object]]:
         )
         .orderBy("grid_lat_index", "grid_lon_index")
     )
+    if ndvi_latest is not None:
+        stats = stats.join(ndvi_latest, on="grid_id", how="left")
+    else:
+        stats = stats.withColumn("mean_ndvi_30days", F.lit(0.0).cast("double"))
     return [row.asDict(recursive=True) for row in stats.collect()]
 
 
@@ -197,6 +349,7 @@ def fetch_forecast_rows(args: argparse.Namespace, grid_rows: list[dict[str, obje
                     "relative_humidity_2m_min": daily_value(daily, "relative_humidity_2m_min", day_index),
                     "wind_speed_10m_max": daily_value(daily, "wind_speed_10m_max", day_index),
                     "precipitation_sum": daily_value(daily, "precipitation_sum", day_index),
+                    "mean_ndvi_30days": float(grid.get("mean_ndvi_30days") or 0.0),
                     "station_distance_km": float(grid["station_distance_km"] or 0.0),
                     "weather_points_count": float(grid["weather_points_count"] or 1.0),
                 }
@@ -267,11 +420,60 @@ def add_time_features(frame: DataFrame) -> DataFrame:
     )
 
 
+def add_advanced_features(frame: DataFrame) -> DataFrame:
+    frame = add_time_features(frame)
+
+    grid_by_date = Window.partitionBy("grid_id").orderBy("date")
+    prev_7 = grid_by_date.rowsBetween(-7, -1)
+    prev_14 = grid_by_date.rowsBetween(-14, -1)
+    prev_30 = grid_by_date.rowsBetween(-30, -1)
+    is_dry_day = F.when(F.col("precipitation_sum") < F.lit(1.0), F.lit(1.0)).otherwise(F.lit(0.0))
+
+    return (
+        frame.withColumn("precip_lag_1", F.lag("precipitation_sum", 1).over(grid_by_date))
+        .withColumn("precip_lag_3", F.lag("precipitation_sum", 3).over(grid_by_date))
+        .withColumn("precip_lag_7", F.lag("precipitation_sum", 7).over(grid_by_date))
+        .withColumn("temp_lag_1", F.lag("temperature_2m_max", 1).over(grid_by_date))
+        .withColumn("temp_lag_3", F.lag("temperature_2m_max", 3).over(grid_by_date))
+        .withColumn("temp_lag_7", F.lag("temperature_2m_max", 7).over(grid_by_date))
+        .withColumn("humidity_lag_1", F.lag("relative_humidity_2m_min", 1).over(grid_by_date))
+        .withColumn("wind_lag_1", F.lag("wind_speed_10m_max", 1).over(grid_by_date))
+        .withColumn("ndvi_lag_1", F.lag("mean_ndvi_30days", 1).over(grid_by_date))
+        .withColumn("temp_7d_avg", F.avg("temperature_2m_max").over(prev_7))
+        .withColumn("temp_7d_std", F.stddev("temperature_2m_max").over(prev_7))
+        .withColumn("temp_30d_avg", F.avg("temperature_2m_max").over(prev_30))
+        .withColumn("temp_30d_std", F.stddev("temperature_2m_max").over(prev_30))
+        .withColumn("humidity_7d_avg", F.avg("relative_humidity_2m_min").over(prev_7))
+        .withColumn("humidity_30d_avg", F.avg("relative_humidity_2m_min").over(prev_30))
+        .withColumn("wind_7d_avg", F.avg("wind_speed_10m_max").over(prev_7))
+        .withColumn("precip_14d_sum", F.sum("precipitation_sum").over(prev_14))
+        .withColumn("precip_30d_sum", F.sum("precipitation_sum").over(prev_30))
+        .withColumn("dry_days_14d", F.sum(is_dry_day).over(prev_14))
+        .withColumn("dry_days_30d", F.sum(is_dry_day).over(prev_30))
+        .withColumn("ndvi_30d_avg", F.avg("mean_ndvi_30days").over(prev_30))
+        .withColumn("ndvi_30d_min", F.min("mean_ndvi_30days").over(prev_30))
+        .withColumn(
+            "heat_dryness_index",
+            F.col("temperature_2m_max") * (F.lit(100.0) - F.col("relative_humidity_2m_min")),
+        )
+        .withColumn(
+            "wind_dryness_index",
+            F.col("wind_speed_10m_max") * (F.lit(100.0) - F.col("relative_humidity_2m_min")),
+        )
+        .withColumn(
+            "vegetation_dryness_index",
+            F.coalesce(F.col("mean_ndvi_30days"), F.lit(0.0)) * F.coalesce(F.col("dry_days_30d"), F.lit(0.0)),
+        )
+        .withColumn("lat_band", F.floor(F.col("grid_lat") / F.lit(5.0)).cast("double"))
+        .withColumn("lon_band", F.floor(F.col("grid_lon") / F.lit(5.0)).cast("double"))
+    )
+
+
 def build_scoring_frame(spark: SparkSession, rows: list[dict[str, object]], target_date: str) -> DataFrame:
     frame = spark.createDataFrame(rows).withColumn("date", F.to_date("date"))
     frame = add_rolling_features(frame)
+    frame = add_advanced_features(frame)
     frame = frame.filter(F.col("date") == F.to_date(F.lit(target_date)))
-    frame = add_time_features(frame)
     return frame.fillna(0.0, subset=DEFAULT_FEATURE_COLUMNS)
 
 
@@ -284,7 +486,7 @@ def risk_level_column(score_col: str, medium_threshold: float, high_threshold: f
 
 
 def predict_risk(scoring: DataFrame, model_path: str, args: argparse.Namespace) -> DataFrame:
-    model = PipelineModel.load(model_path)
+    model = load_prediction_model(model_path, args)
     predictions = model.transform(scoring)
     probability_to_score = F.udf(
         lambda probability: float(probability[1]) if probability is not None and len(probability) > 1 else None,
@@ -333,6 +535,7 @@ def build_geojson(rows: list[dict[str, object]], args: argparse.Namespace) -> di
                     "precipitation_sum": none_or_float(row["precipitation_sum"]),
                     "precipitation_sum_7days": none_or_float(row["precipitation_sum_7days"]),
                     "dry_days_count": int(row["dry_days_count"]),
+                    "mean_ndvi_30days": none_or_float(row["mean_ndvi_30days"]),
                 },
                 "geometry": {
                     "type": "Polygon",
@@ -392,7 +595,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--minio-secret-key", default=os.getenv("MINIO_SECRET_KEY", DEFAULT_MINIO_SECRET_KEY))
     parser.add_argument("--minio-bucket", default=os.getenv("MINIO_BUCKET", DEFAULT_MINIO_BUCKET))
     parser.add_argument("--features-prefix", default=os.getenv("FEATURES_PREFIX", "features"))
-    parser.add_argument("--model-prefix", default=os.getenv("RF_MODEL_OUTPUT_PREFIX", "models/random_forest_fire_baseline"))
+    parser.add_argument("--model-prefix", default=os.getenv("MODEL_OUTPUT_PREFIX"))
+    parser.add_argument("--disable-mlflow-registry", action="store_true")
+    parser.add_argument("--mlflow-tracking-uri", default=os.getenv("MLFLOW_TRACKING_URI", "http://localhost:5000"))
+    parser.add_argument("--mlflow-registry-uri", default=os.getenv("MLFLOW_REGISTRY_URI"))
+    parser.add_argument("--registry-model-uri", default=os.getenv("MLFLOW_MODEL_URI"))
+    parser.add_argument("--metrics-input", type=Path, default=Path("reports/model_metrics_week1.json"))
     parser.add_argument("--predictions-prefix", default=os.getenv("PREDICTIONS_PREFIX", "predictions/fire_risk_forecast"))
     parser.add_argument("--target-date", default=os.getenv("INFERENCE_TARGET_DATE"))
     parser.add_argument("--grid-size", type=float, default=float(os.getenv("GRID_SIZE", "0.5")))
@@ -405,8 +613,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--request-delay-seconds", type=float, default=0.05)
     parser.add_argument("--max-retries", type=int, default=3)
     parser.add_argument("--retry-delay-seconds", type=float, default=2.0)
-    parser.add_argument("--medium-threshold", type=float, default=0.33)
-    parser.add_argument("--high-threshold", type=float, default=0.66)
+    parser.add_argument("--medium-threshold", type=float)
+    parser.add_argument("--high-threshold", type=float)
     parser.add_argument("--geojson-output", type=Path, default=Path("reports/fire_risk_forecast_latest.geojson"))
     parser.add_argument("--metadata-output", type=Path, default=Path("reports/fire_risk_forecast_latest.json"))
     parser.add_argument("--print-progress", action="store_true")
@@ -420,8 +628,6 @@ def parse_args() -> argparse.Namespace:
         parser.error("--past-days-for-rolling must be at least 6")
     if args.forecast_days < 1:
         parser.error("--forecast-days must be positive")
-    if not 0 <= args.medium_threshold <= args.high_threshold <= 1:
-        parser.error("--medium-threshold and --high-threshold must satisfy 0 <= medium <= high <= 1")
     date.fromisoformat(args.target_date)
     return args
 
@@ -429,7 +635,12 @@ def parse_args() -> argparse.Namespace:
 def main() -> int:
     args = parse_args()
     features_input = s3a_path(args.minio_bucket, args.features_prefix)
-    model_input = s3a_path(args.minio_bucket, args.model_prefix)
+    metrics = load_json_if_exists(args.metrics_input)
+    model_input = resolve_model_input(args, metrics)
+    model_name = infer_model_name(args, metrics, model_input)
+    apply_threshold_defaults(args, metrics, model_name)
+    if not 0 <= args.medium_threshold <= args.high_threshold <= 1:
+        raise ValueError("--medium-threshold and --high-threshold must satisfy 0 <= medium <= high <= 1")
     geojson_destination = s3a_path(args.minio_bucket, args.predictions_prefix).rstrip("/") + "/latest.geojson"
     metadata_destination = s3a_path(args.minio_bucket, args.predictions_prefix).rstrip("/") + "/latest.json"
 
@@ -457,6 +668,7 @@ def main() -> int:
                 "precipitation_sum",
                 "precipitation_sum_7days",
                 "dry_days_count",
+                "mean_ndvi_30days",
             )
             .orderBy("grid_lat", "grid_lon")
             .collect()
@@ -469,6 +681,8 @@ def main() -> int:
             "target_date": args.target_date,
             "grid_count": len(output_dicts),
             "model_input": model_input,
+            "model_name": model_name,
+            "model_source": "mlflow_registry" if model_input.startswith("models:/") else "spark_path",
             "features_input": features_input,
             "open_meteo_url": args.open_meteo_url,
             "daily_variables": DAILY_VARIABLES,

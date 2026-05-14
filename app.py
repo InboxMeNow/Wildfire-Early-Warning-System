@@ -832,7 +832,7 @@ def app() -> None:
         metric_col1, metric_col2 = st.columns(2)
         with metric_col1:
             model_rows = []
-            for model_name in ["random_forest", "gbt"]:
+            for model_name in ["rf_baseline", "rf_tuned", "gbt", "random_forest"]:
                 metrics = model_metrics.get(model_name, {})
                 if metrics:
                     model_rows.append(
@@ -931,7 +931,7 @@ def app() -> None:
     with tabs[4]:
         insight_col1, insight_col2 = st.columns([1.25, 1])
         model_options = [
-            model_name for model_name in ["gbt", "random_forest"] if model_metrics.get(model_name)
+            model_name for model_name in ["gbt", "rf_tuned", "rf_baseline", "random_forest"] if model_metrics.get(model_name)
         ]
         default_model = model_metrics.get("best_model", model_options[0] if model_options else "")
         if model_options:

@@ -5,6 +5,7 @@ Build ML-ready wildfire risk features from cleaned FIRMS and weather data in Min
 Input:
     s3a://wildfire-data/firms_clean/
     s3a://wildfire-data/weather_clean/
+    s3a://wildfire-data/ndvi/ (optional)
 
 Output:
     s3a://wildfire-data/features/
@@ -51,6 +52,14 @@ def load_env_file(path: Path = Path(".env")) -> None:
 
 def s3a_path(bucket: str, prefix: str) -> str:
     return f"s3a://{bucket}/{prefix.strip('/')}/"
+
+
+def s3a_exists(spark: SparkSession, path: str) -> bool:
+    jvm = spark.sparkContext._jvm
+    conf = spark.sparkContext._jsc.hadoopConfiguration()
+    hadoop_path = jvm.org.apache.hadoop.fs.Path(path)
+    fs = hadoop_path.getFileSystem(conf)
+    return bool(fs.exists(hadoop_path))
 
 
 def build_spark(args: argparse.Namespace) -> SparkSession:
@@ -165,7 +174,42 @@ def add_rolling_features(features: DataFrame) -> DataFrame:
     )
 
 
-def build_features(fires: DataFrame, weather: DataFrame, grid_size: float) -> DataFrame:
+def build_ndvi_30day_features(weather_daily: DataFrame, ndvi: DataFrame) -> DataFrame:
+    ndvi_values = ensure_date(ndvi, "composite_date").select(
+        "grid_id",
+        F.col("composite_date").alias("ndvi_date"),
+        F.col("mean_ndvi").cast("double").alias("mean_ndvi"),
+    ).alias("n")
+
+    grid_dates = weather_daily.select("grid_id", "date").distinct().alias("d")
+    return (
+        grid_dates.join(
+            ndvi_values,
+            on=[
+                F.col("d.grid_id") == F.col("n.grid_id"),
+                F.col("n.ndvi_date").between(F.date_sub(F.col("d.date"), 29), F.col("d.date")),
+            ],
+            how="left",
+        )
+        .groupBy(F.col("d.grid_id").alias("grid_id"), F.col("d.date").alias("date"))
+        .agg(F.avg(F.col("n.mean_ndvi")).alias("mean_ndvi_30days"))
+    )
+
+
+def with_ndvi_feature(features: DataFrame, weather_daily: DataFrame, ndvi: DataFrame | None) -> DataFrame:
+    if ndvi is None:
+        return features.withColumn("mean_ndvi_30days", F.lit(None).cast("double"))
+
+    ndvi_30days = build_ndvi_30day_features(weather_daily, ndvi)
+    return features.join(ndvi_30days, on=["grid_id", "date"], how="left")
+
+
+def build_features(
+    fires: DataFrame,
+    weather: DataFrame,
+    grid_size: float,
+    ndvi: DataFrame | None = None,
+) -> DataFrame:
     weather_daily = aggregate_weather(weather, grid_size)
     fire_daily = aggregate_fires(fires, grid_size)
 
@@ -188,6 +232,7 @@ def build_features(fires: DataFrame, weather: DataFrame, grid_size: float) -> Da
         )
     )
 
+    features = with_ndvi_feature(features, weather_daily, ndvi)
     features = add_rolling_features(features)
 
     return features.select(
@@ -203,6 +248,7 @@ def build_features(fires: DataFrame, weather: DataFrame, grid_size: float) -> Da
         "precipitation_sum",
         "precipitation_sum_7days",
         "dry_days_count",
+        "mean_ndvi_30days",
         "station_distance_km",
         "weather_points_count",
         "fire_count",
@@ -237,8 +283,14 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--minio-bucket", default=os.getenv("MINIO_BUCKET", DEFAULT_MINIO_BUCKET))
     parser.add_argument("--fires-input-prefix", default=os.getenv("FIRES_CLEAN_PREFIX", "firms_clean"))
     parser.add_argument("--weather-input-prefix", default=os.getenv("WEATHER_CLEAN_PREFIX", "weather_clean"))
+    parser.add_argument("--ndvi-input-prefix", default=os.getenv("NDVI_PREFIX", "ndvi"))
     parser.add_argument("--features-output-prefix", default=os.getenv("FEATURES_PREFIX", "features"))
     parser.add_argument("--grid-size", type=float, default=float(os.getenv("GRID_SIZE", "0.5")))
+    parser.add_argument(
+        "--require-ndvi",
+        action="store_true",
+        help="Fail if the NDVI dataset is missing instead of writing a null mean_ndvi_30days column.",
+    )
     parser.add_argument(
         "--write-mode",
         choices=["append", "error", "errorifexists", "ignore", "overwrite"],
@@ -264,14 +316,23 @@ def main() -> int:
 
     fires_input = s3a_path(args.minio_bucket, args.fires_input_prefix)
     weather_input = s3a_path(args.minio_bucket, args.weather_input_prefix)
+    ndvi_input = s3a_path(args.minio_bucket, args.ndvi_input_prefix)
     features_output = s3a_path(args.minio_bucket, args.features_output_prefix)
 
     spark = build_spark(args)
     try:
         fires = spark.read.parquet(fires_input)
         weather = spark.read.parquet(weather_input)
+        ndvi = None
+        if s3a_exists(spark, ndvi_input):
+            ndvi = spark.read.parquet(ndvi_input)
+            print(f"Loaded NDVI dataset from {ndvi_input}")
+        elif args.require_ndvi:
+            raise RuntimeError(f"NDVI dataset not found at {ndvi_input}")
+        else:
+            print(f"NDVI dataset not found at {ndvi_input}; mean_ndvi_30days will be null.")
 
-        features = build_features(fires, weather, args.grid_size)
+        features = build_features(fires, weather, args.grid_size, ndvi)
         features.write.mode(args.write_mode).parquet(features_output)
 
         print(f"Wrote feature dataset to {features_output}")

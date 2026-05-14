@@ -1,6 +1,6 @@
 # Wildfire Early Warning System
 
-Data and ML pipeline for a wildfire risk early-warning project in Vietnam. The pipeline collects NASA FIRMS fire detections and weather data, cleans them with Spark on MinIO, builds 0.5 degree grid-day features, visualizes historical fire density, trains Spark ML risk models, and produces near-real-time DBSCAN clusters plus anomaly alerts.
+Data and ML pipeline for a wildfire risk early-warning project in Vietnam. The pipeline collects NASA FIRMS fire detections, weather data, and MODIS NDVI vegetation composites, cleans them with Spark on MinIO, builds 0.5 degree grid-day features, visualizes historical fire density, trains Spark ML risk models, and produces near-real-time DBSCAN clusters plus anomaly alerts.
 
 ## Architecture
 
@@ -8,6 +8,7 @@ Data and ML pipeline for a wildfire risk early-warning project in Vietnam. The p
 - `Spark`: PySpark ETL, feature engineering, and ML jobs that read/write MinIO through `s3a://`.
 - `NASA FIRMS`: historical active fire detections for the area around Vietnam, 2020-2024.
 - `Meteostat/Open-Meteo`: daily weather data on a grid around Vietnam.
+- `NASA AppEEARS MOD13Q1.061`: 250m, 16-day MODIS NDVI composites aggregated to grid cells.
 - `geo/vietnam_boundary.geojson`: Vietnam boundary mask used during cleaning so downstream datasets only keep records inside Vietnam.
 - `scikit-learn`: local DBSCAN clustering for recent fire points and lightweight anomaly-detection utilities.
 
@@ -48,6 +49,16 @@ MINIO_ENDPOINT=http://localhost:9000
 MINIO_ACCESS_KEY=minioadmin
 MINIO_SECRET_KEY=minioadmin
 MINIO_BUCKET=wildfire-data
+```
+
+Optional AppEEARS/Earthdata settings for MODIS NDVI:
+
+```text
+EARTHDATA_USERNAME=your_earthdata_username
+EARTHDATA_PASSWORD=your_earthdata_password
+NDVI_BBOX=95,5,115,25
+NDVI_START_DATE=2020-01-01
+NDVI_END_DATE=2024-12-31
 ```
 
 When running inside the Docker network, `docker-compose.yml` sets `MINIO_ENDPOINT=http://minio:9000` for Spark.
@@ -117,9 +128,33 @@ Each row in the final dataset is one `(grid_id, date)`:
 - Fire aggregate: `fire_count`
 - Weather features: temperature, humidity, wind, precipitation
 - Rolling features: `precipitation_sum_7days`, `dry_days_count`
+- Vegetation feature: `mean_ndvi_30days`, the mean of available MOD13Q1 16-day grid composites in the prior 30 days
 - Labels: `fire_occurred`, `risk_level`
 
-### 6. Data Quality And Heatmap
+### 6. MODIS NDVI Integration
+
+Submit an AppEEARS area request, download GeoTIFF outputs, aggregate them per grid cell, and upload the 16-day composite dataset to MinIO:
+
+```powershell
+python src/etl/ndvi_processing.py --mode all --print-progress
+```
+
+For an already completed AppEEARS task:
+
+```powershell
+python src/etl/ndvi_processing.py --mode download --task-id <task_id> --print-progress
+python src/etl/ndvi_processing.py --mode process --print-progress
+```
+
+Output:
+
+- Local GeoTIFF cache: `data/raw/ndvi/geotiffs/`
+- Local grid aggregate: `data/raw/ndvi/mod13q1_ndvi_by_grid.parquet`
+- MinIO: `s3://wildfire-data/ndvi/mod13q1_ndvi_by_grid.parquet`
+
+The feature engineering step reads `s3a://wildfire-data/ndvi/` when present. Add `--require-ndvi` to fail fast if the NDVI dataset has not been produced yet.
+
+### 7. Data Quality And Heatmap
 
 ```powershell
 python 06_data_quality_and_heatmap.py
@@ -130,7 +165,7 @@ Output:
 - Report: `reports/data_quality_week1.md`
 - Heatmap: `maps/fires_heatmap_2020_2024.html`
 
-### 7. Spark ML Training
+### 8. Spark ML Training
 
 Notebook:
 
@@ -147,16 +182,18 @@ docker compose exec -T spark-master /opt/spark/bin/spark-submit --master spark:/
 Processing steps:
 
 - Read `s3a://wildfire-data/features/`.
-- Time-based split: train on 2020-2023, test on 2024.
+- Add advanced lag, rolling, interaction, geographic, and vegetation features.
+- Time-based split: train on 2020-2022, tune thresholds on 2023 validation data, test on 2024.
 - Compute class weights for `fire_occurred`.
-- Tune Spark MLlib `RandomForestClassifier` with `CrossValidator`.
-- Train and compare a Spark MLlib `GBTClassifier`.
-- Evaluate AUC-ROC, precision, recall, and F1.
-- Save the RF model to `s3a://wildfire-data/models/random_forest_fire_baseline/`.
-- Save the GBT model to `s3a://wildfire-data/models/gbt_fire_baseline/`.
-- Save metrics and feature importance artifacts to `reports/`.
+- Train 3 Spark MLlib models: `rf_baseline`, `rf_tuned`, and `gbt`.
+- Tune `rf_tuned` and `gbt` with `CrossValidator`.
+- Evaluate AUC-ROC, AUC-PR, precision, recall, F1, accuracy, specificity, Precision@K, and Recall@K.
+- Optimize decision thresholds on validation F1 and evaluate the chosen threshold on test data.
+- Select the served best model by validation AUC-ROC; keep the 2024 test split for final reporting.
+- Save models to `s3a://wildfire-data/models/rf_baseline/`, `s3a://wildfire-data/models/rf_tuned/`, and `s3a://wildfire-data/models/gbt/`.
+- Save comparison, feature importance, calibration, threshold, and MLflow artifacts to `reports/`.
 
-### 8. Recent Fire Clustering
+### 9. Recent Fire Clustering
 
 ```powershell
 python 07_dbscan_clustering.py
@@ -171,7 +208,7 @@ Processing steps:
 - Save GeoJSON and metadata locally under `reports/`.
 - Upload the latest cluster outputs to `s3://wildfire-data/models/dbscan_fire_clusters/`.
 
-### 9. Fire Anomaly Detection
+### 10. Fire Anomaly Detection
 
 ```powershell
 python 08_anomaly_detection.py
@@ -185,7 +222,7 @@ Processing steps:
 - Save anomaly GeoJSON, detector stats, and metadata locally under `reports/`.
 - Upload the latest detector outputs to `s3://wildfire-data/models/fire_anomaly_detector/`.
 
-### 10. Next-Day Inference
+### 11. Next-Day Inference
 
 ```powershell
 docker compose exec -T spark-master /opt/spark/bin/spark-submit --master spark://spark-master:7077 /workspace/09_inference.py
@@ -195,8 +232,8 @@ Processing steps:
 
 - Read Vietnam grid cells from `s3a://wildfire-data/features/`.
 - Fetch Open-Meteo forecast data for the target day, which defaults to tomorrow in `Asia/Ho_Chi_Minh`.
-- Rebuild the same model features used during training, including time features, 7-day precipitation, and dry-day streak.
-- Load the RF pipeline from `s3a://wildfire-data/models/random_forest_fire_baseline/`.
+- Rebuild the same model features used during training, including time features, 7-day precipitation, dry-day streak, and latest non-null historical `mean_ndvi_30days` per grid.
+- Load the best advanced Spark ML pipeline from `reports/model_metrics_week1.json` by default.
 - Predict fire occurrence probability for each grid cell.
 - Convert probability to `risk_level`: low (`0`), medium (`1`), high (`2`).
 - Save GeoJSON and metadata under `reports/`.
@@ -210,7 +247,7 @@ Daily automation on Windows can call:
 .\scripts\run_daily_inference.ps1
 ```
 
-### 11. Streamlit Dashboard
+### 12. Streamlit Dashboard
 
 ```powershell
 streamlit run app.py
@@ -234,16 +271,19 @@ Latest run after applying the Vietnam boundary mask:
 
 - `firms_clean`: 607,106 rows
 - `weather_clean`: 206,451 rows
-- `features`: 206,451 rows, 113 grid cells, 20 columns
+- `features`: 206,564 rows, 113 grid cells, 21 columns after adding `mean_ndvi_30days`
 - Date range: `2020-01-01` to `2024-12-31`
 - Data quality: PASS, no duplicate `(grid_id, date)` rows, labels match `fire_count`
-- Tuned RF AUC-ROC on 2024 test data: 0.8516
-- GBT AUC-ROC on 2024 test data: 0.8614
-- Best current Spark risk model by AUC-ROC: `gbt`
+- Advanced RF baseline AUC-ROC on 2024 test data: 0.8080
+- Advanced RF tuned AUC-ROC on 2024 test data: 0.8470
+- Advanced GBT AUC-ROC on 2024 test data: 0.8562
+- RF tuned AUC uplift over RF baseline: 0.0390, target met
+- GBT AUC delta versus RF tuned: +0.0092, target met
+- Best current Spark risk model by validation AUC-ROC: `gbt`
 - Latest DBSCAN run: 86 fire points in the latest 24-hour window, 8 clusters
 - Latest anomaly run: 2 anomalous grids on `2024-12-31`
-- Latest inference run: 113 grid cells predicted for `2026-04-30`
-- Latest inference risk levels: 24 low, 53 medium, 36 high
+- Latest inference run: 113 grid cells predicted for `2026-05-15`
+- Latest inference risk levels: 45 low, 38 medium, 30 high
 
 Label distribution:
 
@@ -251,7 +291,7 @@ Label distribution:
 - `risk_level = 1`: 41,531 rows
 - `risk_level = 2`: 19,651 rows
 
-### 12. Kafka Streaming
+### 13. Kafka Streaming
 
 Start Kafka, Kafka UI, and the topic initializer:
 
@@ -300,7 +340,7 @@ python src/streaming/test_consumer.py --max-messages 10
 
 Note: Kafka UI uses host port `8080`; Spark master UI is mapped to `localhost:8082`.
 
-### 13. Spark Structured Streaming Alerts
+### 14. Spark Structured Streaming Alerts
 
 Run the Spark streaming processor in the Docker Spark image against Kafka:
 
@@ -338,7 +378,7 @@ For host-local Linux/macOS runs, this also works after `pip install -r requireme
 python src/streaming/spark_streaming_job.py
 ```
 
-### 14. Airflow Orchestration
+### 15. Airflow Orchestration
 
 Airflow runs the scheduled pipeline DAGs with the web UI on:
 
@@ -386,7 +426,7 @@ docker compose exec airflow airflow dags trigger model_retrain_dag
 `fire_ingestion_dag` needs `FIRMS_MAP_KEY` or `MAP_KEY` in the host environment
 or `.env` before the Airflow container starts.
 
-### 15. Apache Sedona Spatial ETL
+### 16. Apache Sedona Spatial ETL
 
 The Sedona migration keeps spatial work inside Spark instead of using a
 single-node GeoPandas join. It builds Sedona geometries with
@@ -440,12 +480,12 @@ Latest local benchmark report:
 02_fetch_weather.py              # Daily weather fetch/upload
 03_fetch_firms_history.py        # FIRMS history fetch/upload
 04_etl_clean.py                  # Spark cleaning ETL
-05_feature_engineering.py        # Spark spatial join + ML features
+05_feature_engineering.py        # Spark spatial join + ML features, including optional NDVI
 06_data_quality_and_heatmap.py   # Data quality report + heatmap
 07_train_model.py                # Spark MLlib RF tuning + GBT comparison
 07_dbscan_clustering.py          # DBSCAN recent fire clusters + GeoJSON
 08_anomaly_detection.py          # Grid-level z-score anomaly detection
-09_inference.py                  # Open-Meteo next-day RF inference
+09_inference.py                  # Open-Meteo next-day Spark ML inference
 app.py                           # Streamlit dashboard
 geo_utils.py                     # GeoJSON point-in-polygon helpers
 geo/vietnam_boundary.geojson     # Vietnam country boundary mask
@@ -455,6 +495,7 @@ docker/spark/Dockerfile          # Spark image with numpy, Sedona, and Shapely
 spark-conf/spark-defaults.conf   # S3A config for Spark
 dags/                            # Airflow DAGs for ingestion, weather, retraining
 src/orchestration/               # Airflow Python task helpers
+src/etl/                         # External geospatial ETL, including MOD13Q1 NDVI
 src/spatial/                     # Apache Sedona spatial ETL
 src/streaming/                   # Kafka producers, consumers, Spark streaming alerts
 scripts/benchmark_spatial_join.py # GeoPandas vs Sedona benchmark

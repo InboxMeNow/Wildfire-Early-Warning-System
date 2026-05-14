@@ -7,15 +7,16 @@
   ],
   "features_input": "s3a://wildfire-data/features/",
   "grid_count": 113,
-  "high_threshold": 0.66,
-  "medium_threshold": 0.33,
-  "model_input": "s3a://wildfire-data/models/random_forest_fire_baseline/",
+  "high_threshold": 0.75,
+  "medium_threshold": 0.5,
+  "model_input": "s3a://wildfire-data/models/gbt/",
+  "model_name": "gbt",
   "open_meteo_url": "https://api.open-meteo.com/v1/forecast",
   "risk_level_counts": {
-    "0": 24,
-    "1": 53,
-    "2": 36
+    "0": 45,
+    "1": 38,
+    "2": 30
   },
   "status": "ok",
-  "target_date": "2026-04-30"
+  "target_date": "2026-05-15"
 }

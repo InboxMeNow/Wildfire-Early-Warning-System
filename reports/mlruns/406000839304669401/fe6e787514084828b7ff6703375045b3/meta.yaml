@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/reports/mlruns/406000839304669401/fe6e787514084828b7ff6703375045b3/artifacts
+end_time: 1778737606856
+entry_point_name: ''
+experiment_id: '406000839304669401'
+lifecycle_stage: active
+run_id: fe6e787514084828b7ff6703375045b3
+run_name: rf_tuned
+run_uuid: fe6e787514084828b7ff6703375045b3
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1778737603980
+status: 3
+tags: []
+user_id: spark

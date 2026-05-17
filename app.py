@@ -2,8 +2,10 @@ from __future__ import annotations
 
 import json
 import os
+import socket
 from datetime import date, datetime
 from pathlib import Path
+from urllib.parse import urlparse
 
 import folium
 import pandas as pd
@@ -117,6 +119,21 @@ def s3_filesystem(settings: dict[str, str]) -> pafs.S3FileSystem:
         scheme=scheme,
         region="us-east-1",
     )
+
+def minio_endpoint_available(settings: dict[str, str], timeout_seconds: float = 0.8) -> bool:
+    endpoint = settings["endpoint"]
+    endpoint_url = endpoint if "://" in endpoint else f"http://{endpoint}"
+    parsed = urlparse(endpoint_url)
+    host = parsed.hostname
+    if not host:
+        return False
+
+    port = parsed.port or (443 if parsed.scheme == "https" else 80)
+    try:
+        with socket.create_connection((host, port), timeout=timeout_seconds):
+            return True
+    except OSError:
+        return False
 
 
 @st.cache_data(show_spinner=False)
@@ -232,6 +249,9 @@ def load_dataset_info(history_path: str) -> dict[str, object]:
 @st.cache_data(show_spinner="Loading fire detections...")
 def load_fire_points() -> pd.DataFrame:
     settings = minio_settings()
+    if not minio_endpoint_available(settings):
+        raise ConnectionError(f"MinIO endpoint is not reachable: {settings['endpoint']}")
+
     dataset = ds.dataset(
         f"{settings['bucket']}/firms_clean",
         filesystem=s3_filesystem(settings),
@@ -686,14 +706,15 @@ def app() -> None:
 
     render_header(risk_metadata)
 
-    try:
-        fires_all = load_fire_points()
-        fire_source = "MinIO firms_clean"
-        fire_error = None
-    except Exception as exc:
-        fires_all = load_recent_fire_points(str(RECENT_FIRES_PATH))
-        fire_source = "Local recent FIRMS CSV" if not fires_all.empty else "Unavailable"
-        fire_error = exc
+    fires_all = load_recent_fire_points(str(RECENT_FIRES_PATH))
+    fire_source = "Local recent FIRMS CSV" if not fires_all.empty else "Unavailable"
+    fire_error = None
+    if fires_all.empty:
+        try:
+            fires_all = load_fire_points()
+            fire_source = "MinIO firms_clean"
+        except Exception as exc:
+            fire_error = exc
 
     risk_all = risk_dataframe(risk_geojson_all)
     available_dates = sorted(
@@ -702,13 +723,24 @@ def app() -> None:
             *fires_all.get("acq_date", pd.Series(dtype="object")).dropna().tolist(),
         }
     )
+    risk_dates = sorted(risk_all.get("date", pd.Series(dtype="object")).dropna().unique().tolist())
+    fire_dates = sorted(fires_all.get("acq_date", pd.Series(dtype="object")).dropna().unique().tolist())
     default_day = pd.to_datetime(risk_metadata.get("target_date")).date() if risk_metadata.get("target_date") else None
-    if default_day not in available_dates:
-        default_day = available_dates[-1] if available_dates else date.today()
+    selectable_dates = risk_dates or available_dates
+    if default_day not in selectable_dates:
+        default_day = selectable_dates[0] if selectable_dates else date.today()
 
     with st.sidebar:
         st.markdown("### Controls")
-        selected_day = st.date_input("Date", value=default_day)
+        if selectable_dates:
+            selected_day = st.selectbox(
+                "Forecast date",
+                selectable_dates,
+                index=selectable_dates.index(default_day),
+                format_func=lambda value: value.strftime("%Y-%m-%d"),
+            )
+        else:
+            selected_day = st.date_input("Forecast date", value=default_day)
         selected_region = st.selectbox("Region", list(REGIONS.keys()), index=0)
         min_confidence = st.slider("Min fire confidence", 0, 100, 30, 5)
 
@@ -720,6 +752,10 @@ def app() -> None:
             f"History window: `{dataset_info.get('history_date_min', 'n/a')}` to "
             f"`{dataset_info.get('history_date_max', 'n/a')}`"
         )
+        if risk_dates:
+            st.caption(f"Risk forecast dates: `{risk_dates[0]}` to `{risk_dates[-1]}`")
+        if fire_dates:
+            st.caption(f"Recent fire dates: `{fire_dates[0]}` to `{fire_dates[-1]}`")
         st.caption(f"Forecast grids: `{risk_metadata.get('grid_count', len(risk_all))}`")
         st.caption(f"Active fire source: `{fire_source}`")
 
@@ -727,10 +763,26 @@ def app() -> None:
         st.markdown("### Model")
         st.caption(f"Best model: `{model_metrics.get('best_model', 'n/a')}`")
         if risk_metadata:
-            st.caption(f"Forecast target: `{risk_metadata.get('target_date', 'n/a')}`")
+            forecast_start = risk_metadata.get("forecast_start_date", risk_metadata.get("target_date", "n/a"))
+            forecast_end = risk_metadata.get("forecast_end_date", forecast_start)
+            st.caption(f"Forecast window: `{forecast_start}` to `{forecast_end}`")
+            if risk_metadata.get("forecast_horizon_days"):
+                st.caption(f"Forecast horizon: `{risk_metadata.get('forecast_horizon_days')}` day(s)")
         st.caption(f"Generated: `{datetime.now().strftime('%Y-%m-%d %H:%M')}`")
 
     selected_day = pd.to_datetime(selected_day).date()
+    if risk_dates and selected_day not in set(risk_dates):
+        st.warning(
+            "No risk forecast is available for "
+            f"{selected_day.isoformat()}. Available forecast dates currently run from "
+            f"{risk_dates[0].isoformat()} to {risk_dates[-1].isoformat()}."
+        )
+    elif available_dates and selected_day not in set(available_dates):
+        st.warning(
+            "No dashboard data is available for "
+            f"{selected_day.isoformat()}. Available forecast/fire dates currently run from "
+            f"{available_dates[0].isoformat()} to {available_dates[-1].isoformat()}."
+        )
     risk_geojson = filter_risk_geojson(risk_geojson_all, selected_day, selected_region)
     risk_frame = risk_dataframe(risk_geojson)
 

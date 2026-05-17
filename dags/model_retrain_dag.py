@@ -60,18 +60,20 @@ with DAG(
         extra_args=MINIO_ARGS,
     )
 
-    next_day_inference = spark_script_task(
-        task_id="next_day_inference",
+    five_day_inference = spark_script_task(
+        task_id="five_day_inference",
         script_name="09_inference.py",
         extra_args=[
             "--geojson-output",
             str(PROJECT_DIR / "reports" / "fire_risk_forecast_latest.geojson"),
             "--metadata-output",
             str(PROJECT_DIR / "reports" / "fire_risk_forecast_latest.json"),
+            "--forecast-horizon-days",
+            "5",
             "--print-progress",
         ],
     )
 
     clean_data >> build_features
     build_features >> [data_quality, cluster_recent_fires, detect_anomalies, train_models]
-    train_models >> next_day_inference
+    train_models >> five_day_inference

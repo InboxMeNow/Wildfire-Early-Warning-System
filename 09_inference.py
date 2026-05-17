@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Run next-day wildfire risk inference from Open-Meteo forecast data.
+Run multi-day wildfire risk inference from Open-Meteo forecast data.
 
 Input:
     s3a://wildfire-data/features/
@@ -15,7 +15,7 @@ Output:
 Run inside this docker-compose network:
     docker compose exec -T spark-master /opt/spark/bin/spark-submit \
         --master spark://spark-master:7077 \
-        /workspace/09_inference.py
+        /workspace/09_inference.py --forecast-horizon-days 5
 """
 
 from __future__ import annotations
@@ -47,6 +47,7 @@ DEFAULT_MINIO_SECRET_KEY = "minioadmin"
 DEFAULT_MINIO_BUCKET = "wildfire-data"
 DEFAULT_HADOOP_AWS_PACKAGE = "org.apache.hadoop:hadoop-aws:3.3.4"
 DEFAULT_OPEN_METEO_URL = "https://api.open-meteo.com/v1/forecast"
+MAX_FORECAST_HORIZON_DAYS = 5
 REGISTERED_MODEL_NAMES = {
     "rf_tuned": "wildfire-rf-tuned",
     "gbt": "wildfire-gbt",
@@ -288,17 +289,29 @@ def spark_metadata_has_data(path: Path) -> bool:
     return any(child.name.startswith("part-") for child in metadata_path.iterdir())
 
 
-def default_target_date(timezone: str) -> str:
+def current_date_for_timezone(timezone: str) -> date:
     if ZoneInfo is not None:
         try:
-            current_day = datetime.now(ZoneInfo(timezone)).date()
-            return (current_day + timedelta(days=1)).isoformat()
+            return datetime.now(ZoneInfo(timezone)).date()
         except Exception:
             pass
 
     offset_hours = 7 if timezone == "Asia/Ho_Chi_Minh" else 0
-    current_day = (datetime.utcnow() + timedelta(hours=offset_hours)).date()
-    return (current_day + timedelta(days=1)).isoformat()
+    return (datetime.utcnow() + timedelta(hours=offset_hours)).date()
+
+def default_target_date(timezone: str) -> str:
+    return (current_date_for_timezone(timezone) + timedelta(days=1)).isoformat()
+
+def forecast_target_dates(args: argparse.Namespace) -> list[date]:
+    start = date.fromisoformat(args.target_date)
+    return [start + timedelta(days=offset) for offset in range(args.forecast_horizon_days)]
+
+def forecast_end_date(args: argparse.Namespace) -> date:
+    return forecast_target_dates(args)[-1]
+
+def required_forecast_days(args: argparse.Namespace) -> int:
+    today = current_date_for_timezone(args.forecast_timezone)
+    return max(1, (forecast_end_date(args) - today).days + 1)
 
 
 def build_spark(args: argparse.Namespace) -> SparkSession:
@@ -387,7 +400,8 @@ def open_meteo_daily(
 
 
 def fetch_forecast_rows(args: argparse.Namespace, grid_rows: list[dict[str, object]]) -> list[dict[str, object]]:
-    target = date.fromisoformat(args.target_date)
+    target_dates = {target.isoformat() for target in forecast_target_dates(args)}
+    target_end = forecast_end_date(args)
     rows: list[dict[str, object]] = []
 
     for index, grid in enumerate(grid_rows, start=1):
@@ -397,7 +411,7 @@ def fetch_forecast_rows(args: argparse.Namespace, grid_rows: list[dict[str, obje
         dates = [date.fromisoformat(value) for value in daily["time"]]
 
         for day_index, current_date in enumerate(dates):
-            if current_date > target:
+            if current_date > target_end:
                 continue
             rows.append(
                 {
@@ -423,8 +437,10 @@ def fetch_forecast_rows(args: argparse.Namespace, grid_rows: list[dict[str, obje
         if args.print_progress and (index % 25 == 0 or index == len(grid_rows)):
             print(f"Fetched forecast for {index:,}/{len(grid_rows):,} grid cells")
 
-    if not any(row["date"] == args.target_date for row in rows):
-        raise RuntimeError(f"Open-Meteo forecast did not include target_date={args.target_date}")
+    available_target_dates = {row["date"] for row in rows if row["date"] in target_dates}
+    missing_dates = sorted(target_dates - available_target_dates)
+    if missing_dates:
+        raise RuntimeError(f"Open-Meteo forecast did not include target forecast date(s): {', '.join(missing_dates)}")
 
     return rows
 
@@ -531,11 +547,19 @@ def add_advanced_features(frame: DataFrame) -> DataFrame:
     )
 
 
-def build_scoring_frame(spark: SparkSession, rows: list[dict[str, object]], target_date: str) -> DataFrame:
+def build_scoring_frame(
+    spark: SparkSession,
+    rows: list[dict[str, object]],
+    target_start_date: str,
+    target_end_date: str,
+) -> DataFrame:
     frame = spark.createDataFrame(rows).withColumn("date", F.to_date("date"))
     frame = add_rolling_features(frame)
     frame = add_advanced_features(frame)
-    frame = frame.filter(F.col("date") == F.to_date(F.lit(target_date)))
+    frame = frame.filter(
+        (F.col("date") >= F.to_date(F.lit(target_start_date)))
+        & (F.col("date") <= F.to_date(F.lit(target_end_date)))
+    )
     return frame.fillna(0.0, subset=DEFAULT_FEATURE_COLUMNS)
 
 
@@ -566,9 +590,77 @@ def predict_risk(scoring: DataFrame, model_path: str, args: argparse.Namespace) 
     )
 
 
+def _polygon_coords(polygon) -> list[list[list[float]]]:
+    exterior = [[float(x), float(y)] for x, y in polygon.exterior.coords]
+    rings = [exterior]
+    for interior in polygon.interiors:
+        rings.append([[float(x), float(y)] for x, y in interior.coords])
+    return rings
+
+
+def _geometry_to_geojson(geom) -> dict[str, object] | None:
+    if geom is None or geom.is_empty:
+        return None
+    geom_type = geom.geom_type
+    if geom_type == "Polygon":
+        return {"type": "Polygon", "coordinates": _polygon_coords(geom)}
+    if geom_type == "MultiPolygon":
+        return {
+            "type": "MultiPolygon",
+            "coordinates": [_polygon_coords(part) for part in geom.geoms if not part.is_empty],
+        }
+    if geom_type == "GeometryCollection":
+        polygons = [part for part in geom.geoms if part.geom_type in ("Polygon", "MultiPolygon") and not part.is_empty]
+        if not polygons:
+            return None
+        coordinates: list[list[list[list[float]]]] = []
+        for part in polygons:
+            if part.geom_type == "Polygon":
+                coordinates.append(_polygon_coords(part))
+            else:
+                coordinates.extend(_polygon_coords(sub) for sub in part.geoms if not sub.is_empty)
+        if len(coordinates) == 1:
+            return {"type": "Polygon", "coordinates": coordinates[0]}
+        return {"type": "MultiPolygon", "coordinates": coordinates}
+    return None
+
+
+def _load_boundary(path: Path):
+    try:
+        from shapely.geometry import shape
+        from shapely.ops import unary_union
+    except ImportError as exc:
+        raise RuntimeError("shapely is required for grid clipping. Install shapely or pass --no-clip-to-boundary.") from exc
+
+    if not path.exists():
+        raise FileNotFoundError(f"Country boundary not found: {path}")
+
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    if payload.get("type") == "FeatureCollection":
+        geometries = [shape(feature["geometry"]) for feature in payload.get("features", []) if feature.get("geometry")]
+    elif payload.get("type") == "Feature":
+        geometries = [shape(payload["geometry"])] if payload.get("geometry") else []
+    else:
+        geometries = [shape(payload)]
+
+    if not geometries:
+        raise RuntimeError(f"Country boundary file is empty: {path}")
+    return unary_union(geometries)
+
+
 def build_geojson(rows: list[dict[str, object]], args: argparse.Namespace) -> dict[str, object]:
     features: list[dict[str, object]] = []
     half_step = args.grid_size / 2.0
+
+    boundary = None
+    if args.clip_to_boundary:
+        try:
+            boundary = _load_boundary(args.country_boundary)
+        except (FileNotFoundError, RuntimeError) as exc:
+            print(f"WARN: clipping disabled - {exc}")
+
+    if boundary is not None:
+        from shapely.geometry import box
 
     for row in rows:
         lat0 = float(row["grid_lat"])
@@ -577,6 +669,29 @@ def build_geojson(rows: list[dict[str, object]], args: argparse.Namespace) -> di
         lon1 = lon0 + args.grid_size
         center_lat = lat0 + half_step
         center_lon = lon0 + half_step
+
+        if boundary is not None:
+            cell = box(lon0, lat0, lon1, lat1)
+            clipped = cell.intersection(boundary)
+            if clipped.is_empty:
+                continue
+            geometry = _geometry_to_geojson(clipped)
+            if geometry is None:
+                continue
+        else:
+            geometry = {
+                "type": "Polygon",
+                "coordinates": [
+                    [
+                        [lon0, lat0],
+                        [lon1, lat0],
+                        [lon1, lat1],
+                        [lon0, lat1],
+                        [lon0, lat0],
+                    ]
+                ],
+            }
+
         features.append(
             {
                 "type": "Feature",
@@ -599,18 +714,7 @@ def build_geojson(rows: list[dict[str, object]], args: argparse.Namespace) -> di
                     "dry_days_count": int(row["dry_days_count"]),
                     "mean_ndvi_30days": none_or_float(row["mean_ndvi_30days"]),
                 },
-                "geometry": {
-                    "type": "Polygon",
-                    "coordinates": [
-                        [
-                            [lon0, lat0],
-                            [lon1, lat0],
-                            [lon1, lat1],
-                            [lon0, lat1],
-                            [lon0, lat0],
-                        ]
-                    ],
-                },
+                "geometry": geometry,
             }
         )
 
@@ -636,6 +740,16 @@ def count_risk_levels(rows: list[dict[str, object]]) -> dict[str, int]:
     return counts
 
 
+def count_risk_levels_by_date(rows: list[dict[str, object]]) -> dict[str, dict[str, int]]:
+    counts: dict[str, dict[str, int]] = {}
+    for row in rows:
+        row_date = row["date"].isoformat() if hasattr(row["date"], "isoformat") else str(row["date"])
+        level = str(row["risk_level"])
+        counts.setdefault(row_date, {})
+        counts[row_date][level] = counts[row_date].get(level, 0) + 1
+    return counts
+
+
 def copy_local_to_s3a(spark: SparkSession, local_path: Path, destination: str) -> None:
     jvm = spark.sparkContext._jvm
     conf = spark.sparkContext._jsc.hadoopConfiguration()
@@ -648,7 +762,7 @@ def copy_local_to_s3a(spark: SparkSession, local_path: Path, destination: str) -
 def parse_args() -> argparse.Namespace:
     load_env_file()
 
-    parser = argparse.ArgumentParser(description="Predict next-day wildfire risk from Open-Meteo forecast data.")
+    parser = argparse.ArgumentParser(description="Predict multi-day wildfire risk from Open-Meteo forecast data.")
     parser.add_argument("--spark-app-name", default="Wildfire Risk Inference")
     parser.add_argument("--spark-master", default=os.getenv("SPARK_MASTER"))
     parser.add_argument("--hadoop-aws-package", default=os.getenv("SPARK_HADOOP_AWS_PACKAGE", DEFAULT_HADOOP_AWS_PACKAGE))
@@ -665,7 +779,26 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--metrics-input", type=Path, default=Path("reports/model_metrics_week1.json"))
     parser.add_argument("--predictions-prefix", default=os.getenv("PREDICTIONS_PREFIX", "predictions/fire_risk_forecast"))
     parser.add_argument("--target-date", default=os.getenv("INFERENCE_TARGET_DATE"))
-    parser.add_argument("--grid-size", type=float, default=float(os.getenv("GRID_SIZE", "0.5")))
+    parser.add_argument(
+        "--forecast-horizon-days",
+        type=int,
+        default=int(os.getenv("FORECAST_HORIZON_DAYS", str(MAX_FORECAST_HORIZON_DAYS))),
+        help=f"Number of consecutive forecast dates to score, capped at {MAX_FORECAST_HORIZON_DAYS}.",
+    )
+    parser.add_argument("--grid-size", type=float, default=float(os.getenv("GRID_SIZE", "0.25")))
+    parser.add_argument(
+        "--country-boundary",
+        type=Path,
+        default=Path(os.getenv("COUNTRY_BOUNDARY", "geo/vietnam_boundary.geojson")),
+        help="GeoJSON Polygon/MultiPolygon used to clip risk grid cells to the country footprint.",
+    )
+    parser.add_argument(
+        "--no-clip-to-boundary",
+        dest="clip_to_boundary",
+        action="store_false",
+        help="Skip clipping risk grid cells to the country boundary polygon.",
+    )
+    parser.set_defaults(clip_to_boundary=True)
     parser.add_argument("--forecast-timezone", default=os.getenv("FORECAST_TIMEZONE", "Asia/Ho_Chi_Minh"))
     parser.add_argument("--spark-timezone", default=os.getenv("SPARK_SQL_TIMEZONE", "UTC"))
     parser.add_argument("--open-meteo-url", default=os.getenv("OPEN_METEO_FORECAST_URL", DEFAULT_OPEN_METEO_URL))
@@ -684,13 +817,16 @@ def parse_args() -> argparse.Namespace:
     args = parser.parse_args()
     if args.target_date is None:
         args.target_date = default_target_date(args.forecast_timezone)
+    date.fromisoformat(args.target_date)
     if args.grid_size <= 0:
         parser.error("--grid-size must be positive")
     if args.past_days_for_rolling < 6:
         parser.error("--past-days-for-rolling must be at least 6")
+    if not 1 <= args.forecast_horizon_days <= MAX_FORECAST_HORIZON_DAYS:
+        parser.error(f"--forecast-horizon-days must be between 1 and {MAX_FORECAST_HORIZON_DAYS}")
     if args.forecast_days < 1:
         parser.error("--forecast-days must be positive")
-    date.fromisoformat(args.target_date)
+    args.forecast_days = max(args.forecast_days, required_forecast_days(args))
     return args
 
 
@@ -705,13 +841,15 @@ def main() -> int:
         raise ValueError("--medium-threshold and --high-threshold must satisfy 0 <= medium <= high <= 1")
     geojson_destination = s3a_path(args.minio_bucket, args.predictions_prefix).rstrip("/") + "/latest.geojson"
     metadata_destination = s3a_path(args.minio_bucket, args.predictions_prefix).rstrip("/") + "/latest.json"
+    forecast_dates = [target.isoformat() for target in forecast_target_dates(args)]
+    forecast_end = forecast_dates[-1]
 
     spark = build_spark(args)
     try:
         features = spark.read.parquet(features_input)
         grid_rows = load_grid(features)
         forecast_rows = fetch_forecast_rows(args, grid_rows)
-        scoring = build_scoring_frame(spark, forecast_rows, args.target_date)
+        scoring = build_scoring_frame(spark, forecast_rows, args.target_date, forecast_end)
         predictions = predict_risk(scoring, model_input, args)
 
         output_rows = (
@@ -732,16 +870,22 @@ def main() -> int:
                 "dry_days_count",
                 "mean_ndvi_30days",
             )
-            .orderBy("grid_lat", "grid_lon")
+            .orderBy("date", "grid_lat", "grid_lon")
             .collect()
         )
         output_dicts = [row.asDict(recursive=True) for row in output_rows]
+        unique_grid_count = len({row["grid_id"] for row in output_dicts})
 
         geojson = build_geojson(output_dicts, args)
         metadata = {
             "status": "ok",
             "target_date": args.target_date,
-            "grid_count": len(output_dicts),
+            "forecast_start_date": forecast_dates[0],
+            "forecast_end_date": forecast_end,
+            "forecast_horizon_days": args.forecast_horizon_days,
+            "forecast_dates": forecast_dates,
+            "grid_count": unique_grid_count,
+            "prediction_count": len(output_dicts),
             "model_input": model_input,
             "model_name": model_name,
             "model_source": "mlflow_registry" if model_input.startswith("models:/") else "spark_path",
@@ -751,6 +895,7 @@ def main() -> int:
             "medium_threshold": args.medium_threshold,
             "high_threshold": args.high_threshold,
             "risk_level_counts": count_risk_levels(output_dicts),
+            "risk_level_counts_by_date": count_risk_levels_by_date(output_dicts),
         }
 
         write_json(args.geojson_output, geojson)
@@ -758,8 +903,9 @@ def main() -> int:
         copy_local_to_s3a(spark, args.geojson_output, geojson_destination)
         copy_local_to_s3a(spark, args.metadata_output, metadata_destination)
 
-        print(f"Target date: {args.target_date}")
-        print(f"Predicted grid cells: {len(output_dicts):,}")
+        print(f"Forecast dates: {forecast_dates[0]} to {forecast_end} ({args.forecast_horizon_days} day(s))")
+        print(f"Predicted grid cells: {unique_grid_count:,}")
+        print(f"Prediction rows: {len(output_dicts):,}")
         print(f"Saved GeoJSON to {args.geojson_output}")
         print(f"Uploaded GeoJSON to {geojson_destination}")
     finally:

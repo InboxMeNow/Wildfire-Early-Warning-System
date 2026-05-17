@@ -39,6 +39,11 @@ MLflow UI:
 - Experiment: `wildfire-prediction`
 - Registered models: `wildfire-rf-tuned`, `wildfire-gbt`
 
+FastAPI:
+
+- API docs: `http://localhost:8000/docs`
+- Health: `http://localhost:8000/health`
+
 The local Spark image is built from `docker/spark/Dockerfile` and installs `numpy`, MLflow, Apache Sedona, and Shapely for MLlib and distributed spatial ETL.
 
 ## Configuration
@@ -136,6 +141,7 @@ Each row in the final dataset is one `(grid_id, date)`:
 - Weather features: temperature, humidity, wind, precipitation
 - Rolling features: `precipitation_sum_7days`, `dry_days_count`
 - Vegetation feature: `mean_ndvi_30days`, the mean of available MOD13Q1 16-day grid composites in the prior 30 days
+- Feature rows are limited to the FIRMS date coverage window so newer weather-only dates are not mislabeled as no-fire examples before fire observations arrive.
 - Labels: `fire_occurred`, `risk_level`
 
 ### 6. MODIS NDVI Integration
@@ -243,19 +249,19 @@ Processing steps:
 - Save anomaly GeoJSON, detector stats, and metadata locally under `reports/`.
 - Upload the latest detector outputs to `s3://wildfire-data/models/fire_anomaly_detector/`.
 
-### 11. Next-Day Inference
+### 11. Five-Day Inference
 
 ```powershell
-docker compose exec -T spark-master /opt/spark/bin/spark-submit --master spark://spark-master:7077 /workspace/09_inference.py
+docker compose exec -T spark-master /opt/spark/bin/spark-submit --master spark://spark-master:7077 /workspace/09_inference.py --forecast-horizon-days 5
 ```
 
 Processing steps:
 
 - Read Vietnam grid cells from `s3a://wildfire-data/features/`.
-- Fetch Open-Meteo forecast data for the target day, which defaults to tomorrow in `Asia/Ho_Chi_Minh`.
+- Fetch Open-Meteo forecast data for the forecast window, which defaults to tomorrow plus the next 4 days in `Asia/Ho_Chi_Minh`.
 - Rebuild the same model features used during training, including time features, 7-day precipitation, dry-day streak, and latest non-null historical `mean_ndvi_30days` per grid.
 - Load the Production model from MLflow Registry by default, currently `models:/wildfire-gbt/Production`.
-- Predict fire occurrence probability for each grid cell.
+- Predict fire occurrence probability for each grid cell and forecast date.
 - Convert probability to `risk_level`: low (`0`), medium (`1`), high (`2`).
 - Save GeoJSON and metadata under `reports/`.
 - Upload the latest outputs to `s3a://wildfire-data/predictions/fire_risk_forecast/`.
@@ -286,6 +292,34 @@ Dashboard views:
 - Active Fires: FIRMS fire-point scatter from MinIO plus DBSCAN cluster polygons from `reports/dbscan_fire_clusters_latest.geojson`.
 - Statistics: Plotly charts for risk levels, daily fire detections, model metrics, and anomaly output.
 
+### 13. FastAPI REST Service
+
+Start PostgreSQL, MLflow, and the API:
+
+```powershell
+docker compose up -d postgres mlflow api
+```
+
+Endpoints:
+
+- `GET /predict?lat=21&lon=105&date=2026-05-15`
+- `GET /alerts/active`
+- `GET /historical/fires?bbox=104,20,106,22&start=2024-01-01&end=2024-12-31`
+- `POST /subscribe`
+
+Example checks:
+
+```powershell
+Invoke-RestMethod "http://localhost:8000/predict?lat=21&lon=105&date=2026-05-15"
+Invoke-RestMethod "http://localhost:8000/alerts/active?limit=5"
+Invoke-RestMethod "http://localhost:8000/historical/fires?bbox=104,20,106,22&start=2024-01-01&end=2024-12-31&limit=5"
+Invoke-RestMethod -Method Post "http://localhost:8000/subscribe" `
+  -ContentType "application/json" `
+  -Body '{"email":"developer@example.com","min_risk_level":"high","bbox":"104,20,106,22"}'
+```
+
+The service seeds PostgreSQL `prediction_cache` from `reports/fire_risk_forecast_latest.geojson` on startup and resolves the served model version from MLflow Registry.
+
 ## Current Results
 
 Latest run after applying the Vietnam boundary mask:
@@ -304,10 +338,11 @@ Latest run after applying the Vietnam boundary mask:
 - MLflow experiment `wildfire-prediction`: 15 runs
 - Registered MLflow models: `wildfire-rf-tuned` version 3, `wildfire-gbt` version 3
 - Production model: `models:/wildfire-gbt/Production`
+- FastAPI docs: `http://localhost:8000/docs`, backed by PostgreSQL prediction cache with 565 rows
 - Latest DBSCAN run: 86 fire points in the latest 24-hour window, 8 clusters
 - Latest anomaly run: 2 anomalous grids on `2024-12-31`
-- Latest inference run: 113 grid cells predicted for `2026-05-15`
-- Latest inference risk levels: 37 low, 39 medium, 37 high
+- Latest inference run: 113 grid cells predicted for each date from `2026-05-16` to `2026-05-20`
+- Latest inference risk levels: 441 low, 99 medium, 25 high across the five-day horizon
 
 Label distribution:
 
@@ -315,7 +350,7 @@ Label distribution:
 - `risk_level = 1`: 41,531 rows
 - `risk_level = 2`: 19,651 rows
 
-### 13. Kafka Streaming
+### 14. Kafka Streaming
 
 Start Kafka, Kafka UI, and the topic initializer:
 
@@ -364,7 +399,7 @@ python src/streaming/test_consumer.py --max-messages 10
 
 Note: Kafka UI uses host port `8080`; Spark master UI is mapped to `localhost:8082`.
 
-### 14. Spark Structured Streaming Alerts
+### 15. Spark Structured Streaming Alerts
 
 Run the Spark streaming processor in the Docker Spark image against Kafka:
 
@@ -402,7 +437,7 @@ For host-local Linux/macOS runs, this also works after `pip install -r requireme
 python src/streaming/spark_streaming_job.py
 ```
 
-### 15. Airflow Orchestration
+### 16. Airflow Orchestration
 
 Airflow runs the scheduled pipeline DAGs with the web UI on:
 
@@ -431,12 +466,14 @@ submit jobs to `spark://spark-master:7077`.
 Available DAGs:
 
 - `fire_ingestion_dag`: every 3 hours, fetches recent FIRMS detections, publishes
-  to Kafka `fire-events`, and archives the same batch to MinIO.
+  to Kafka `fire-events`, archives the JSON batch to MinIO, and writes a
+  schema-compatible Parquet batch into `s3://wildfire-data/firms/` so the next
+  Spark clean/features/retrain cycle can learn from new fire detections.
 - `weather_update_dag`: daily, fetches weather for the execution date, then runs
   Spark cleaning and feature refresh.
 - `model_retrain_dag`: weekly, runs Spark cleaning, feature engineering, model
   training, data quality/heatmap, DBSCAN clustering, anomaly detection, and
-  next-day inference.
+  five-day inference.
 
 Useful checks:
 
@@ -448,9 +485,11 @@ docker compose exec airflow airflow dags trigger model_retrain_dag
 ```
 
 `fire_ingestion_dag` needs `FIRMS_MAP_KEY` or `MAP_KEY` in the host environment
-or `.env` before the Airflow container starts.
+or `.env` before the Airflow container starts. It fetches the last 6 hours by
+default (`FIRMS_RECENT_HOURS=6`) to overlap the 3-hour schedule; Spark cleaning
+deduplicates overlapping FIRMS rows before feature generation.
 
-### 16. Apache Sedona Spatial ETL
+### 17. Apache Sedona Spatial ETL
 
 The Sedona migration keeps spatial work inside Spark instead of using a
 single-node GeoPandas join. It builds Sedona geometries with
@@ -509,7 +548,7 @@ Latest local benchmark report:
 07_train_model.py                # Spark MLlib RF tuning + GBT comparison
 07_dbscan_clustering.py          # DBSCAN recent fire clusters + GeoJSON
 08_anomaly_detection.py          # Grid-level z-score anomaly detection
-09_inference.py                  # Open-Meteo next-day Spark ML inference
+09_inference.py                  # Open-Meteo five-day Spark ML inference
 app.py                           # Streamlit dashboard
 geo_utils.py                     # GeoJSON point-in-polygon helpers
 geo/vietnam_boundary.geojson     # Vietnam country boundary mask

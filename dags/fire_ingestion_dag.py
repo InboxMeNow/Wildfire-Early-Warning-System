@@ -1,4 +1,4 @@
-"""Ingest recent FIRMS detections, publish to Kafka, and archive to MinIO."""
+"""Ingest recent FIRMS detections for Kafka, replay archive, and retraining."""
 
 from __future__ import annotations
 
@@ -20,6 +20,7 @@ from orchestration.airflow_tasks import (  # noqa: E402
     archive_recent_fires_to_minio,
     fetch_recent_firms_to_file,
     push_recent_fires_to_kafka,
+    write_recent_fires_training_parquet,
 )
 from wildfire_airflow_utils import DEFAULT_ARGS  # noqa: E402
 
@@ -49,4 +50,9 @@ with DAG(
         python_callable=archive_recent_fires_to_minio,
     )
 
-    fetch >> [to_kafka, to_minio]
+    to_training_raw = PythonOperator(
+        task_id="write_training_raw_parquet",
+        python_callable=write_recent_fires_training_parquet,
+    )
+
+    fetch >> [to_kafka, to_minio, to_training_raw]

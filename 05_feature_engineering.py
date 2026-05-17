@@ -142,6 +142,46 @@ def aggregate_fires(fires: DataFrame, grid_size: float) -> DataFrame:
     )
 
 
+def fire_observation_bounds(
+    fires: DataFrame,
+    fire_daily: DataFrame,
+    firms_coverage: DataFrame | None = None,
+) -> DataFrame:
+    fires = ensure_date(fires, "acq_date")
+    if "query_start" in fires.columns:
+        fires = ensure_date(fires, "query_start")
+    if "query_end" in fires.columns:
+        fires = ensure_date(fires, "query_end")
+
+    fire_start = F.col("query_start") if "query_start" in fires.columns else F.col("acq_date")
+    fire_end = F.col("query_end") if "query_end" in fires.columns else F.col("acq_date")
+    bounds = fires.select(
+        F.coalesce(fire_start, F.col("acq_date")).alias("coverage_start"),
+        F.coalesce(fire_end, F.col("acq_date")).alias("coverage_end"),
+    )
+
+    if firms_coverage is not None:
+        coverage = ensure_date(firms_coverage, "query_start")
+        coverage = ensure_date(coverage, "query_end")
+        bounds = bounds.unionByName(
+            coverage.select(
+                F.col("query_start").alias("coverage_start"),
+                F.col("query_end").alias("coverage_end"),
+            ),
+            allowMissingColumns=True,
+        )
+
+    fallback = fire_daily.select(
+        F.col("date").alias("coverage_start"),
+        F.col("date").alias("coverage_end"),
+    )
+    bounds = bounds.unionByName(fallback, allowMissingColumns=True)
+    return bounds.agg(
+        F.min("coverage_start").alias("_fire_min_date"),
+        F.max("coverage_end").alias("_fire_max_date"),
+    )
+
+
 def add_rolling_features(features: DataFrame) -> DataFrame:
     grid_by_date = Window.partitionBy("grid_id").orderBy("date")
     rolling_7_days = grid_by_date.rowsBetween(-6, 0)
@@ -212,6 +252,15 @@ def build_features(
 ) -> DataFrame:
     weather_daily = aggregate_weather(weather, grid_size)
     fire_daily = aggregate_fires(fires, grid_size)
+    fire_coverage = fire_daily.agg(
+        F.min("date").alias("_fire_min_date"),
+        F.max("date").alias("_fire_max_date"),
+    )
+    weather_daily = (
+        weather_daily.crossJoin(fire_coverage)
+        .filter(F.col("date").between(F.col("_fire_min_date"), F.col("_fire_max_date")))
+        .drop("_fire_min_date", "_fire_max_date")
+    )
 
     features = (
         weather_daily.join(fire_daily, on=["grid_id", "date"], how="left")
@@ -285,7 +334,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--weather-input-prefix", default=os.getenv("WEATHER_CLEAN_PREFIX", "weather_clean"))
     parser.add_argument("--ndvi-input-prefix", default=os.getenv("NDVI_PREFIX", "ndvi"))
     parser.add_argument("--features-output-prefix", default=os.getenv("FEATURES_PREFIX", "features"))
-    parser.add_argument("--grid-size", type=float, default=float(os.getenv("GRID_SIZE", "0.5")))
+    parser.add_argument("--grid-size", type=float, default=float(os.getenv("GRID_SIZE", "0.25")))
     parser.add_argument(
         "--require-ndvi",
         action="store_true",

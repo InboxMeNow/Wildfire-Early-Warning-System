@@ -10,4 +10,5 @@ Set-Location $ProjectRoot
 docker compose up -d
 docker compose exec -T spark-master /opt/spark/bin/spark-submit `
     --master spark://spark-master:7077 `
-    /workspace/09_inference.py
+    /workspace/09_inference.py `
+    --forecast-horizon-days 5

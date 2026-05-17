@@ -1018,6 +1018,11 @@ def main() -> int:
         train_rows = train_df.count()
         validation_rows = validation_df.count()
         test_rows = test_df.count()
+        data_bounds = data.agg(
+            F.min("date").alias("date_min"),
+            F.max("date").alias("date_max"),
+            F.countDistinct("grid_id").alias("grid_count"),
+        ).collect()[0]
 
         evaluator_roc = BinaryClassificationEvaluator(
             labelCol="fire_occurred",
@@ -1033,6 +1038,11 @@ def main() -> int:
         model_metrics: dict[str, Any] = {
             "features_input": features_input,
             "feature_columns": DEFAULT_FEATURE_COLUMNS,
+            "feature_dataset": {
+                "date_min": data_bounds["date_min"].isoformat() if data_bounds["date_min"] else None,
+                "date_max": data_bounds["date_max"].isoformat() if data_bounds["date_max"] else None,
+                "grid_count": int(data_bounds["grid_count"] or 0),
+            },
             "class_weights": weight_info,
             "splits": {
                 "train_end_date": args.train_end_date,

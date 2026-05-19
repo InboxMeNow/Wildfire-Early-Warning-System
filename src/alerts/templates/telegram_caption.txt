@@ -1,0 +1,16 @@
+{% if alert.alert_type == "FORECAST_RISK" -%}
+🛰️ <b>Wildfire Forecast: {{ alert.severity_label | upper }}</b>
+
+📍 Grid: <code>{{ alert.grid_id }}</code>{% if alert.latitude is not none %}
+🧭 {{ "%.4f"|format(alert.latitude) }}, {{ "%.4f"|format(alert.longitude) }}{% endif %}
+📅 Forecast date: {{ alert.forecast_date }}{% if alert.risk_score is not none %}
+📈 Risk score: {{ "%.2f"|format(alert.risk_score) }}{% endif %}
+🆔 <code>{{ alert.alert_id }}</code>
+{%- else -%}
+🔥 <b>Wildfire Alert: {{ alert.severity_label | upper }}</b>
+
+📍 Grid: <code>{{ alert.grid_id }}</code>{% if alert.latitude is not none %}
+🧭 {{ "%.4f"|format(alert.latitude) }}, {{ "%.4f"|format(alert.longitude) }}{% endif %}
+🔥 Fires: {{ alert.fire_count }} (>{{ alert.threshold }} / {{ alert.window_start }} → {{ alert.window_end }})
+🆔 <code>{{ alert.alert_id }}</code>
+{%- endif %}

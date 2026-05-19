@@ -255,6 +255,8 @@ services:
       AIRFLOW__CORE__EXECUTOR: SequentialExecutor
       AIRFLOW__CORE__LOAD_EXAMPLES: "false"
       AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: "false"
+      AIRFLOW__WEBSERVER__WEB_SERVER_WORKER_TIMEOUT: "600"
+      AIRFLOW__WEBSERVER__WORKERS: "2"
       AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: sqlite:////opt/airflow/airflow.db
       AIRFLOW_CONN_SPARK_DEFAULT: '{"conn_type":"spark","host":"spark://spark-master","port":7077}'
       AIRFLOW_PROJECT_DIR: /opt/airflow/project
@@ -308,6 +310,53 @@ services:
           --password admin || true &&
         airflow scheduler &
         exec airflow webserver
+
+  notification-worker:
+    build:
+      context: .
+      dockerfile: docker/alerts/Dockerfile
+    image: wildfire-alerts:1.0.0
+    container_name: wildfire-notification-worker
+    depends_on:
+      postgres:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+      kafka-init:
+        condition: service_completed_successfully
+    environment:
+      DATABASE_URL: postgresql://wildfire:wildfire@postgres:5432/wildfire
+      KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+      KAFKA_ALERT_TOPIC: alerts
+      KAFKA_NOTIFICATION_GROUP_ID: wildfire-notification-worker
+      KAFKA_NOTIFICATION_OFFSETS: latest
+      ALERT_GRID_SIZE: "0.5"
+      LOG_LEVEL: INFO
+      TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN:-}
+      SMTP_HOST: ${SMTP_HOST:-smtp.gmail.com}
+      SMTP_PORT: ${SMTP_PORT:-587}
+      SMTP_USERNAME: ${SMTP_USERNAME:-}
+      SMTP_PASSWORD: ${SMTP_PASSWORD:-}
+      SMTP_SENDER: ${SMTP_SENDER:-}
+      SMTP_USE_TLS: ${SMTP_USE_TLS:-true}
+      MAPBOX_TOKEN: ${MAPBOX_TOKEN:-}
+    restart: unless-stopped
+    command: ["python", "-m", "src.alerts.notification_worker"]
+
+  telegram-bot:
+    image: wildfire-alerts:1.0.0
+    container_name: wildfire-telegram-bot
+    depends_on:
+      postgres:
+        condition: service_healthy
+      notification-worker:
+        condition: service_started
+    environment:
+      DATABASE_URL: postgresql://wildfire:wildfire@postgres:5432/wildfire
+      TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN:-}
+      LOG_LEVEL: INFO
+    restart: unless-stopped
+    command: ["python", "-m", "src.alerts.telegram_bot"]
 
 volumes:
   minio-data:

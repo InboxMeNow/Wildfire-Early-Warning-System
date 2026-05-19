@@ -6,7 +6,14 @@ from datetime import datetime
 
 from airflow import DAG
 
-from wildfire_airflow_utils import DEFAULT_ARGS, MINIO_ARGS, PROJECT_DIR, python_script_task, spark_script_task
+from wildfire_airflow_utils import (
+    DEFAULT_ARGS,
+    MINIO_ARGS,
+    PROJECT_DIR,
+    python_module_task,
+    python_script_task,
+    spark_script_task,
+)
 
 
 with DAG(
@@ -74,6 +81,19 @@ with DAG(
         ],
     )
 
+    publish_forecast_alerts = python_module_task(
+        task_id="publish_forecast_alerts",
+        module_name="src.alerts.forecast_publisher",
+        extra_args=[
+            "--geojson",
+            str(PROJECT_DIR / "reports" / "fire_risk_forecast_latest.geojson"),
+            "--min-severity",
+            "high",
+            "--max-alerts",
+            "50",
+        ],
+    )
+
     clean_data >> build_features
     build_features >> [data_quality, cluster_recent_fires, detect_anomalies, train_models]
-    train_models >> five_day_inference
+    train_models >> five_day_inference >> publish_forecast_alerts

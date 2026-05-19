@@ -62,6 +62,27 @@ def python_script_task(
     )
 
 
+def python_module_task(
+    task_id: str,
+    module_name: str,
+    extra_args: list[str] | None = None,
+    extra_env: dict[str, str] | None = None,
+) -> BashOperator:
+    args = " ".join(extra_args or [])
+    bash_command = f"cd {PROJECT_DIR} && {PYTHON_BIN} -m {module_name} {args}".strip()
+    env = {
+        "PYTHONPATH": f"{PROJECT_DIR}:{PROJECT_DIR / 'src'}",
+        "MINIO_ENDPOINT": os.getenv("MINIO_ENDPOINT", "http://minio:9000"),
+        "MINIO_ACCESS_KEY": os.getenv("MINIO_ACCESS_KEY", "minioadmin"),
+        "MINIO_SECRET_KEY": os.getenv("MINIO_SECRET_KEY", "minioadmin"),
+        "MINIO_BUCKET": os.getenv("MINIO_BUCKET", "wildfire-data"),
+        "KAFKA_BOOTSTRAP_SERVERS": os.getenv("KAFKA_BOOTSTRAP_SERVERS", "kafka:29092"),
+    }
+    if extra_env:
+        env.update(extra_env)
+    return BashOperator(task_id=task_id, bash_command=bash_command, env=env, append_env=True)
+
+
 def spark_script_task(
     task_id: str,
     script_name: str,

@@ -337,6 +337,56 @@ def build_spark(args: argparse.Namespace) -> SparkSession:
     return builder.getOrCreate()
 
 
+def generate_full_grid(boundary_path: Path, grid_size: float) -> list[dict[str, object]]:
+    """Generate all grid cells of size `grid_size` that intersect the country boundary."""
+    import math
+
+    try:
+        from shapely.geometry import box, shape
+        from shapely.ops import unary_union
+    except ImportError as exc:
+        raise RuntimeError("shapely is required for --full-grid. Install shapely or disable --full-grid.") from exc
+
+    payload = json.loads(boundary_path.read_text(encoding="utf-8"))
+    if payload.get("type") == "FeatureCollection":
+        geometries = [shape(f["geometry"]) for f in payload.get("features", []) if f.get("geometry")]
+    elif payload.get("type") == "Feature":
+        geometries = [shape(payload["geometry"])] if payload.get("geometry") else []
+    else:
+        geometries = [shape(payload)]
+
+    boundary = unary_union(geometries)
+    min_lon, min_lat, max_lon, max_lat = boundary.bounds
+
+    lat_start = int(math.floor(min_lat / grid_size))
+    lat_end = int(math.floor(max_lat / grid_size))
+    lon_start = int(math.floor(min_lon / grid_size))
+    lon_end = int(math.floor(max_lon / grid_size))
+
+    grid_rows: list[dict[str, object]] = []
+    for lat_idx in range(lat_start, lat_end + 1):
+        for lon_idx in range(lon_start, lon_end + 1):
+            lat0 = round(lat_idx * grid_size, 6)
+            lon0 = round(lon_idx * grid_size, 6)
+            cell = box(lon0, lat0, lon0 + grid_size, lat0 + grid_size)
+            if cell.intersects(boundary):
+                grid_rows.append(
+                    {
+                        "grid_id": f"{lat_idx}_{lon_idx}",
+                        "grid_lat_index": lat_idx,
+                        "grid_lon_index": lon_idx,
+                        "grid_lat": lat0,
+                        "grid_lon": lon0,
+                        "station_distance_km": 0.0,
+                        "weather_points_count": 1.0,
+                        "mean_ndvi_30days": 0.0,
+                    }
+                )
+
+    grid_rows.sort(key=lambda r: (r["grid_lat_index"], r["grid_lon_index"]))
+    return grid_rows
+
+
 def load_grid(features: DataFrame) -> list[dict[str, object]]:
     ndvi_latest = None
     if "mean_ndvi_30days" in features.columns:
@@ -799,6 +849,18 @@ def parse_args() -> argparse.Namespace:
         help="Skip clipping risk grid cells to the country boundary polygon.",
     )
     parser.set_defaults(clip_to_boundary=True)
+    parser.add_argument(
+        "--full-grid",
+        action="store_true",
+        default=True,
+        help="Generate a full grid covering the country boundary instead of using only cells from features/ (default: on).",
+    )
+    parser.add_argument(
+        "--no-full-grid",
+        dest="full_grid",
+        action="store_false",
+        help="Use only grid cells present in the features dataset.",
+    )
     parser.add_argument("--forecast-timezone", default=os.getenv("FORECAST_TIMEZONE", "Asia/Ho_Chi_Minh"))
     parser.add_argument("--spark-timezone", default=os.getenv("SPARK_SQL_TIMEZONE", "UTC"))
     parser.add_argument("--open-meteo-url", default=os.getenv("OPEN_METEO_FORECAST_URL", DEFAULT_OPEN_METEO_URL))
@@ -847,7 +909,17 @@ def main() -> int:
     spark = build_spark(args)
     try:
         features = spark.read.parquet(features_input)
-        grid_rows = load_grid(features)
+
+        if args.full_grid and args.country_boundary.exists():
+            grid_rows = generate_full_grid(args.country_boundary, args.grid_size)
+            # Enrich with NDVI from historical features where available
+            historical_grid = load_grid(features)
+            ndvi_lookup = {row["grid_id"]: row.get("mean_ndvi_30days", 0.0) for row in historical_grid}
+            for row in grid_rows:
+                row["mean_ndvi_30days"] = ndvi_lookup.get(row["grid_id"], 0.0)
+        else:
+            grid_rows = load_grid(features)
+
         forecast_rows = fetch_forecast_rows(args, grid_rows)
         scoring = build_scoring_frame(spark, forecast_rows, args.target_date, forecast_end)
         predictions = predict_risk(scoring, model_input, args)

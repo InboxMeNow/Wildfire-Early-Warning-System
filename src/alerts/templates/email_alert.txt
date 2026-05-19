@@ -1,0 +1,23 @@
+{% if alert.alert_type == "FORECAST_RISK" -%}
+Wildfire forecast: {{ alert.severity_label | upper }} risk on {{ alert.forecast_date }}
+
+Grid: {{ alert.grid_id }}
+{% if alert.latitude is not none %}Location: {{ "%.4f"|format(alert.latitude) }}, {{ "%.4f"|format(alert.longitude) }}
+{% endif %}Forecast date: {{ alert.forecast_date }}
+{% if alert.risk_score is not none %}Risk score: {{ "%.2f"|format(alert.risk_score) }}
+{% endif %}Alert ID: {{ alert.alert_id }}
+{% if alert.map_url %}Map preview: {{ alert.map_url }}
+{% endif %}
+{%- else -%}
+Wildfire alert: {{ alert.severity_label | upper }} severity hot zone
+
+Grid: {{ alert.grid_id }}
+{% if alert.latitude is not none %}Location: {{ "%.4f"|format(alert.latitude) }}, {{ "%.4f"|format(alert.longitude) }}
+{% endif %}Fire count: {{ alert.fire_count }} (threshold {{ alert.threshold }})
+Window: {{ alert.window_start }} -> {{ alert.window_end }}
+Alert ID: {{ alert.alert_id }}
+{% if alert.map_url %}Map preview: {{ alert.map_url }}
+{% endif %}
+{%- endif %}
+
+You receive this because you subscribed to wildfire alerts. Reply STOP or use the unsubscribe command on the Telegram bot to opt out.

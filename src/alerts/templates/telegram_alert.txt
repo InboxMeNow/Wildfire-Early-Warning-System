@@ -1,0 +1,21 @@
+{% if alert.alert_type == "FORECAST_RISK" -%}
+🛰️ <b>Wildfire Forecast: {{ alert.severity_label | upper }}</b>
+
+📍 Grid: <code>{{ alert.grid_id }}</code>{% if alert.latitude is not none %}
+🧭 Location: {{ "%.4f"|format(alert.latitude) }}, {{ "%.4f"|format(alert.longitude) }}{% endif %}
+📅 Forecast date: {{ alert.forecast_date }}{% if alert.risk_score is not none %}
+📈 Risk score: {{ "%.2f"|format(alert.risk_score) }}{% endif %}
+🆔 Alert ID: <code>{{ alert.alert_id }}</code>
+{% if alert.map_url %}🗺️ Map: {{ alert.map_url }}{% endif %}
+{%- else -%}
+🔥 <b>Wildfire Alert: {{ alert.severity_label | upper }}</b>
+
+📍 Grid: <code>{{ alert.grid_id }}</code>{% if alert.latitude is not none %}
+🧭 Location: {{ "%.4f"|format(alert.latitude) }}, {{ "%.4f"|format(alert.longitude) }}{% endif %}
+🔥 Fire count: {{ alert.fire_count }} (threshold: {{ alert.threshold }})
+🕐 Window: {{ alert.window_start }} → {{ alert.window_end }}
+🆔 Alert ID: <code>{{ alert.alert_id }}</code>
+{% if alert.map_url %}🗺️ Map: {{ alert.map_url }}{% endif %}
+{%- endif %}
+
+Reply /status for the latest 5 alerts in your region, /unsubscribe to stop.
